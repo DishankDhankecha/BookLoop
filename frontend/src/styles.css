@@ -1,2 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+@theme {
+  --color-primary: #0F4C3A;
+  --color-secondary: #F9F7F2;
+  --color-accent: #FF6B4A;  
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+  --shadow-card: 0 10px 30px -10px rgba(15, 76, 58, 0.1);
+}
+body {
+  @apply bg-secondary text-gray-800 font-sans;
+}
