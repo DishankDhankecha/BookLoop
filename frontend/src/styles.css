@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0F4C3A;
-  --color-secondary: #F9F7F2;
-  --color-accent: #FF6B4A;  
   --font-serif: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
-  --shadow-card: 0 10px 30px -10px rgba(15, 76, 58, 0.1);
+  --color-primary: #efe6d8;
+  --color-text-primary: #1e2a44;
+  --color-secondary: #7fa99b;
 }
+
 body {
-  @apply bg-secondary text-gray-800 font-sans;
+  font-family: var(--font-sans);
+  background-color: var(--color-primary);
 }
