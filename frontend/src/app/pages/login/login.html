@@ -1,0 +1,89 @@
+<div class="flex min-h-screen w-full flex-col lg:flex-row">
+    <div
+        class="relative hidden w-1/2 flex-col items-center justify-center bg-paper p-12 lg:flex border-r border-indigo/10 overflow-hidden">
+        <div class="max-w-md text-center">
+            <div class="mb-12 flex justify-center">
+                <div class="relative h-32 w-24 border-2 border-accent">
+                    <div class="absolute -right-2 -top-2 h-32 w-24 border border-indigo/20"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-accent text-4xl!">menu_book</span>
+                    </div>
+                </div>
+            </div>
+            <h2 class="serif-text text-4xl italic leading-relaxed text-indigo">
+                "A room without books is like a body without soul."
+            </h2>
+            <div class="mt-8 flex items-center justify-center gap-4">
+                <div class="h-px w-8 bg-accent/30"></div>
+                <p class="text-sm uppercase tracking-[0.3em] text-accent font-semibold">Cicero</p>
+                <div class="h-px w-8 bg-accent/30"></div>
+            </div>
+        </div>
+        <div class="absolute bottom-12 left-12">
+            <p class="text-xl font-bold tracking-tighter text-indigo serif-text">BookLoop.</p>
+        </div>
+    </div>
+    <div class="flex flex-1 flex-col justify-center bg-white px-8 py-16 sm:px-16 lg:px-24">
+        <div class="mx-auto w-full max-w-90 flex flex-col h-full">
+            <div class="mb-10 lg:hidden">
+                <p class="text-2xl font-bold tracking-tighter text-indigo serif-text">BookLoop.</p>
+            </div>
+            <div class="mb-14">
+                <h1 class="serif-text text-5xl font-normal text-indigo mb-3">Welcome back</h1>
+                <p class="text-indigo/60 text-lg">Continue your reading journey.</p>
+            </div>
+
+            @if(errorMessage()){
+                <div class="mb-6 border border-red-500 bg-red-50 p-4 text-sm text-red-700">
+                    {{ errorMessage() }}
+                </div>
+            }
+
+            <form (ngSubmit)="onSubmit()" class="space-y-6">
+                <div class="relative">
+                    <input type="email" placeholder="name@example.com"
+                        [(ngModel)]="credentials.email"
+                        class="peer block w-full border border-indigo bg-transparent px-4 pb-4 pt-4 text-indigo focus:border-accent focus:ring-0 sm:text-sm placeholder:text-transparent focus:placeholder:text-indigo/30"
+                        id="email" name="email">
+
+                    <label for="email"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-[10px] font-bold uppercase tracking-widest text-indigo/50 transition-all opacity-0 peer-placeholder-shown:opacity-100 peer-focus:opacity-0">
+                        Email Address
+                    </label>
+                </div>
+                <div class="space-y-2">
+                    <div class="relative">
+                        <input [type]="showPassword() ? 'text' : 'password' "
+                            [(ngModel)]="credentials.password"
+                            class="peer block w-full border border-indigo bg-transparent px-4 pb-4 pt-4 text-indigo focus:border-accent focus:ring-0 text-xs placeholder:text-transparent focus:placeholder:text-indigo/30"
+                            id="password" name="password" placeholder="••••••••" required="">
+
+                        <label for="password"
+                            class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-[10px] font-bold uppercase tracking-widest text-indigo/50 transition-all opacity-0 peer-placeholder-shown:opacity-100 peer-focus:opacity-0">Password</label>
+                        <button (click)="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-indigo/40 hover:text-indigo" type="button">
+                            <span class="material-symbols-outlined text-xl!">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
+                        </button>
+                    </div>
+                    <div class="flex justify-end pt-1">
+                        <a href="" class="text-[10px] font-bold uppercase tracking-widest text-indigo underline underlint-offset-4 hover:text-accent">Forgot password?</a>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <button [disabled]="isLoading()" class="group relative flex w-full items-center justify-center bg-indigo px-8 py-5 text-sm font-bold uppercase tracking-[0.2em] text-paper transition-all hover:bg-indigo/90"
+                    type="submit">
+                    {{ isLoading() ? 'Logging In...' : 'Log In' }}
+                    @if(!isLoading()){
+                        <span class="material-symbols-outlined ml-2! text-sm! transition-transform! group-hover:translate-x-1!">arrow_forward</span>
+                    }
+                    </button>
+                </div>
+            </form>
+            <div class="mt-12 text-center">
+                <p class="text-xs text-indigo/60">
+                    Don't have an account?
+                    <a routerLink="/register" class="font-bold text-indigo underline underline-offset-4 hover:text-accent uppercase tracking-widest">Sign up</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
