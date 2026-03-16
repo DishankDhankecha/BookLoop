@@ -1,0 +1,205 @@
+<div class="h-screen flex flex-col bg-beige font-sans text-indigo overflow-hidden">
+    <app-navbar></app-navbar>
+
+    <div class="flex flex-1 overflow-hidden">
+        <app-sidebar></app-sidebar>
+
+        <main class="flex-1 p-6 md:p-12 bg-beige overflow-y-auto">
+            <div class="max-w-350 mx-auto">
+
+                <header class="mb-12">
+                    <p class="text-xs font-bold uppercase tracking-[0.3em] text-sage mb-2">Account Overview</p>
+                    <h2 class="text-4xl md:text-5xl font-black tracking-tight text-indigo line-clamp-1">Welcome back, {{
+                        username() }}.</h2>
+                    <div class="w-24 h-1 bg-indigo mt-6"></div>
+                </header>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-0 mb-12 border border-indigo">
+                    <div class="border-b lg:border-b-0 lg:border-r border-indigo p-6 md:p-8 text-center bg-white/30">
+                        <p
+                            class="text-[10px] md:text-xs uppercase font-bold tracking-widest text-indigo/60 mb-2 md:mb-4">
+                            Listed Volumes</p>
+                        <p class="text-3xl md:text-4xl font-light">{{ listedCount() }}</p>
+                    </div>
+                    <div class="border-b lg:border-b-0 lg:border-r border-indigo p-6 md:p-8 text-center bg-white/30">
+                        <p
+                            class="text-[10px] md:text-xs uppercase font-bold tracking-widest text-indigo/60 mb-2 md:mb-4">
+                            Active Incoming</p>
+                        <p class="text-3xl md:text-4xl font-light">{{ incomingCount() }}</p>
+                    </div>
+                    <div class="border-b sm:border-b-0 lg:border-r border-indigo p-6 md:p-8 text-center bg-white/30">
+                        <p
+                            class="text-[10px] md:text-xs uppercase font-bold tracking-widest text-indigo/60 mb-2 md:mb-4">
+                            Active Outgoing</p>
+                        <p class="text-3xl md:text-4xl font-light">{{ outgoingCount() }}</p>
+                    </div>
+                    <div class="p-6 md:p-8 text-center bg-white/30">
+                        <p
+                            class="text-[10px] md:text-xs uppercase font-bold tracking-widest text-indigo/60 mb-2 md:mb-4">
+                            Completed Loops</p>
+                        <p class="text-3xl md:text-4xl font-light text-sage font-medium">{{ completedCount() }}</p>
+                    </div>
+                </div>
+
+                @if (actionRequired()) {
+                <div
+                    class="border border-sage p-6 md:p-10 flex flex-col md:flex-row items-center gap-6 mb-12 bg-sage/10">
+                    <div class="flex-1 text-center md:text-left">
+                        <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+                            <span class="material-symbols-outlined text-sage">priority_high</span>
+                            <p class="text-[10px] md:text-xs font-black uppercase tracking-widest text-sage">Action
+                                Required</p>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-bold mb-2 uppercase tracking-tight line-clamp-1">New request
+                            for {{ actionRequired().book?.title }}</h3>
+                        <p class="text-indigo/80 text-sm font-medium italic">@{{ actionRequired().requester?.username }}
+                            has requested to borrow this volume in Surat.</p>
+                    </div>
+                    <a routerLink="/exchanges"
+                        class="bg-sage text-indigo px-10 py-4 font-black uppercase tracking-widest text-xs hover:brightness-95 transition-all text-center w-full md:w-auto">
+                        Review Request
+                    </a>
+                </div>
+                }
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+                    <div class="lg:col-span-7 flex flex-col gap-12">
+
+                        <div>
+                            <div class="flex justify-between items-end mb-6 border-b border-indigo/20 pb-4">
+                                <h4 class="text-lg md:text-xl font-black uppercase tracking-tighter">My Recent Listings
+                                </h4>
+                                <a routerLink="/my-library"
+                                    class="text-[10px] font-bold uppercase tracking-widest border-b border-indigo hover:opacity-60 transition-opacity">View
+                                    Library</a>
+                            </div>
+
+                            <div class="space-y-4">
+                                @for (book of myRecentBooks(); track book._id) {
+                                <div
+                                    class="flex gap-4 items-center group bg-white/20 border border-transparent hover:border-indigo/20 p-2 transition-all">
+                                    <div
+                                        class="w-12 md:w-16 aspect-3/4 bg-indigo/5 border border-indigo/20 shrink-0 relative overflow-hidden">
+                                        @if (book.images && book.images.length > 0) {
+                                        <img [src]="book.images[0]"
+                                            class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                                            alt="Cover" />
+                                        } @else {
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <span
+                                                class="material-symbols-outlined text-indigo/20 text-sm">auto_stories</span>
+                                        </div>
+                                        }
+                                    </div>
+                                    <div class="flex flex-col justify-center flex-1 min-w-0">
+                                        <h5
+                                            class="font-bold uppercase tracking-tight text-sm md:text-base text-indigo line-clamp-1">
+                                            {{ book.title }}</h5>
+                                        <p class="text-[10px] text-indigo/60 uppercase tracking-widest line-clamp-1">By
+                                            {{ book.author }}</p>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span
+                                                class="text-[9px] border border-sage text-sage px-1 font-bold uppercase tracking-widest">{{
+                                                book.status }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                } @empty {
+                                <div class="py-8 text-center border border-dashed border-indigo/20">
+                                    <p class="text-[10px] uppercase tracking-widest opacity-50 font-bold">You haven't
+                                        listed any books yet.</p>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-end mb-6 border-b border-indigo/20 pb-4">
+                                <h4 class="text-lg md:text-xl font-black uppercase tracking-tighter">Suggested For You
+                                </h4>
+                                <a routerLink="/browse"
+                                    class="text-[10px] font-bold uppercase tracking-widest border-b border-indigo hover:opacity-60 transition-opacity">Browse
+                                    Archive</a>
+                            </div>
+
+                            <div class="space-y-4">
+                                @for (book of suggestedBooks(); track book._id) {
+                                <div [routerLink]="['/book', book._id]"
+                                    class="flex gap-4 items-center group bg-white/20 border border-transparent hover:border-indigo/20 p-2 transition-all">
+                                    <div
+                                        class="w-12 md:w-16 aspect-3/4 bg-indigo/5 border border-indigo/20 shrink-0 relative overflow-hidden">
+                                        @if (book.images && book.images.length > 0) {
+                                        <img [src]="book.images[0]"
+                                            class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                                            alt="Cover" />
+                                        } @else {
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <span
+                                                class="material-symbols-outlined text-indigo/20 text-sm">auto_stories</span>
+                                        </div>
+                                        }
+                                    </div>
+                                    <div class="flex flex-col justify-center flex-1 min-w-0">
+                                        <h5
+                                            class="font-bold uppercase tracking-tight text-sm md:text-base text-indigo line-clamp-1">
+                                            {{ book.title }}</h5>
+                                        <p class="text-[10px] text-indigo/60 uppercase tracking-widest line-clamp-1">By
+                                            {{ book.author }}</p>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span
+                                                class="text-[9px] border border-sage text-sage px-1 font-bold uppercase tracking-widest">{{
+                                                book.genre }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                } @empty {
+                                <div class="py-8 text-center border border-dashed border-indigo/20">
+                                    <p class="text-[10px] uppercase tracking-widest opacity-50 font-bold">No community
+                                        additions right now.</p>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="lg:col-span-5">
+                        <div class="flex justify-between items-end mb-6 border-b border-indigo/20 pb-4">
+                            <h4 class="text-lg md:text-xl font-black uppercase tracking-tighter">Recent Activity</h4>
+                            <a routerLink="/exchanges"
+                                class="text-[10px] font-bold uppercase tracking-widest border-b border-indigo hover:opacity-60 transition-opacity">View
+                                All</a>
+                        </div>
+
+                        <div class="bg-indigo p-6 text-beige h-full max-h-100 overflow-y-auto">
+                            <div class="space-y-6">
+                                @for (act of recentActivity(); track act._id) {
+                                <div class="border-l-2 pl-4"
+                                    [ngClass]="act.type === 'incoming' ? 'border-sage' : 'border-beige/40'">
+                                    <p class="uppercase text-[9px] tracking-[0.2em] font-bold mb-1"
+                                        [ngClass]="act.type === 'incoming' ? 'text-sage' : 'text-beige/60'">
+                                        {{ act.type === 'incoming' ? 'Incoming Request' : 'Outgoing Request' }}
+                                    </p>
+                                    <p class="text-sm font-medium italic line-clamp-2">"{{ act.book?.title }}" is
+                                        currently {{ act.status }}.</p>
+                                    <p class="text-[9px] uppercase tracking-widest mt-2 text-beige/40">
+                                        {{ act.type === 'incoming' ? 'From @' + act.requester?.username : 'To @' +
+                                        act.owner?.username }}
+                                    </p>
+                                </div>
+                                } @empty {
+                                <div class="py-4 text-center">
+                                    <p class="text-[10px] uppercase tracking-widest opacity-50 font-bold">No exchange
+                                        activity yet.</p>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

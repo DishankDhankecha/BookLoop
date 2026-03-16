@@ -1,4 +1,5 @@
 const Book = require('../models/Book');
+const User = require('../models/User');
 
 const getBooks = async (req, res) => {
     try {
@@ -11,7 +12,7 @@ const getBooks = async (req, res) => {
 
 const createBook = async (req, res) => {
     try {
-        const { title, author, isbn, genre, condition } = req.body;
+        const { title, author, isbn, genre, condition, images } = req.body;
 
         const book = new Book({
             title,
@@ -19,10 +20,17 @@ const createBook = async (req, res) => {
             isbn,
             genre,
             condition,
+            images,
             owner: req.user._id
-        })
+        });
 
         const createdBook = await book.save();
+
+        await User.findByIdAndUpdate(
+            req.user._id,
+            { $push: { booksListed: createdBook._id } }
+        );
+
         res.status(201).json(createdBook);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -46,6 +54,7 @@ const updateBook = async (req, res) => {
             req.body,
             { new: true }
         );
+
         res.json(updateBook);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -60,15 +69,44 @@ const deleteBook = async (req, res) => {
             return res.status(404).json({ message: "Book not found " });
         }
 
-        if (book.owner.toString() !== req.params.id) {
+        if (book.owner.toString() !== req.user.id) {
             return res.status(401).json({ message: "User is not authorised to delete this book" });
         }
 
         await book.deleteOne();
-        res.status(500).json({ message: "Book Removed" });
+
+        await User.findByIdAndUpdate(
+            req.user.id,
+            { $pull: { booksListed: req.params.id } }
+        );
+
+        res.status(200).json({ message: "Book Removed" });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 }
 
-module.exports = { getBooks, createBook , updateBook, deleteBook }; 
+const getPublicBooks = async (req, res) => {
+    try {
+        const books = await Book.find({ status: 'Available' }).populate('owner', 'username');
+        res.json(books);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+const getBookById = async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id).populate('owner', 'username location avatar');
+        
+        if (!book) {
+            return res.status(404).json({ message: "Book not found" });
+        }
+        
+        res.json(book);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+module.exports = { getBooks, createBook, updateBook, deleteBook, getPublicBooks, getBookById };

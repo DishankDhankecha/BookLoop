@@ -1,0 +1,30 @@
+<aside class="w-64 h-full hidden border-r border-indigo/20 md:flex flex-col bg-beige shrink-0">
+    <div class="flex-1 flex flex-col gap-2 mt-4 overflow-y-auto">
+        @for (link of links; track link.route) {
+        <a [routerLink]="link.route" routerLinkActive="sidebar-active" #rla="routerLinkActive"
+            class="flex items-center gap-4 px-8 py-3 group transition-colors" [class.hover:bg-indigo/5]="!rla.isActive">
+
+            <span class="material-symbols-outlined"
+                [class]="rla.isActive ? 'text-indigo' : 'text-indigo/60 group-hover:text-indigo'">
+                {{ link.icon }}
+            </span>
+
+            <span class="text-sm uppercase tracking-widest"
+                [class]="rla.isActive ? 'font-bold text-indigo' : 'font-medium text-indigo/60 group-hover:text-indigo'">
+                {{ link.name }}
+            </span>
+        </a>
+        }
+    </div>
+
+    <div class="shrink-0 flex flex-col gap-2 mb-4 border-t border-indigo/10 pt-4">
+        <a routerLink="/settings" class="flex items-center gap-4 px-8 py-3 hover:bg-indigo/5 transition-colors group">
+            <span class="material-symbols-outlined text-indigo/60 group-hover:text-indigo">settings</span>
+            <span class="text-sm font-medium uppercase tracking-widest text-indigo/60 group-hover:text-indigo">Settings</span>
+        </a>
+        <button (click)="logout()" class="flex items-center gap-4 px-8 py-3 hover:bg-indigo/5 transition-colors group w-full text-left cursor-pointer outline-none border-none bg-transparent">
+            <span class="material-symbols-outlined text-indigo/60 group-hover:text-indigo">logout</span>
+            <span class="text-sm font-medium uppercase tracking-widest text-indigo/60 group-hover:text-indigo">Logout</span>
+        </button>
+    </div>
+</aside>

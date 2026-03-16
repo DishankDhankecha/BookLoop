@@ -1,0 +1,57 @@
+<nav class="shrink-0 border-b border-indigo/20 px-8 py-4 flex items-center justify-between bg-beige z-50 relative">
+    <div class="flex items-center gap-2">
+        <h1 class="flex items-center gap-2 text-2xl font-black tracking-tighter uppercase "><img src="assets/icons/book.svg" alt="" class="w-10 h-10"> BookLoop</h1>
+    </div>
+
+    <div class="flex items-center gap-8">
+
+        <div class="relative cursor-pointer" (click)="toggleDropdown()">
+            <span class="material-symbols-outlined text-indigo text-2xl!">notifications</span>
+
+            @if (hasUnread()) {
+            <span class="absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-sage ring-2 ring-beige"></span>
+            }
+
+            @if (isDropdownOpen()) {
+            <div class="absolute right-0 mt-6 w-80 bg-beige border border-indigo shadow-[0_10px_40px_-15px_rgba(30,42,68,0.3)] z-50 flex flex-col cursor-default"
+                (click)="$event.stopPropagation()">
+                <div class="p-4 border-b border-indigo/20 flex justify-between items-center bg-indigo/5">
+                    <h4 class="font-bold text-xs uppercase tracking-widest text-indigo">Recent Activity</h4>
+                </div>
+
+                <div class="flex flex-col">
+                    @for (note of recentNotifications(); track note.id) {
+                    <div class="p-4 border-b border-indigo/10 hover:bg-white/30 transition-colors cursor-pointer"
+                        routerLink="/settings">
+                        <p class="text-[8px] font-black uppercase tracking-widest mb-1"
+                            [ngClass]="note.type === 'Request Declined' ? 'text-red-700' : 'text-sage'">
+                            {{ note.type }}
+                        </p>
+                        <p class="text-[10px] font-medium text-indigo leading-tight line-clamp-2">{{ note.message }}</p>
+                    </div>
+                    } @empty {
+                    <div class="p-8 text-center opacity-50">
+                        <span class="material-symbols-outlined text-2xl mb-2">notifications_off</span>
+                        <p class="text-[9px] uppercase tracking-widest font-bold">No new notifications</p>
+                    </div>
+                    }
+                </div>
+
+                <a routerLink="/settings"
+                    class="block w-full text-center p-3 text-[9px] font-black uppercase tracking-widest text-indigo bg-indigo/5 hover:bg-indigo hover:text-beige transition-colors">
+                    View All in Settings
+                </a>
+            </div>
+            }
+        </div>
+
+        <div
+            routerLink="/settings" class="h-10 cursor-pointer w-10 rounded-full bg-indigo/5 border border-indigo overflow-hidden flex items-center justify-center shrink-0">
+            @if (userAvatar()) {
+            <img class="w-full h-full object-cover" [src]="userAvatar()" alt="User Profile">
+            } @else {
+            <span class="material-symbols-outlined text-indigo/40 text-xl">person</span>
+            }
+        </div>
+    </div>
+</nav>

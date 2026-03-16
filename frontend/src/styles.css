@@ -11,19 +11,12 @@
   --color-sage: #7FA99B;
   --color-beige: #EFE6D8;
 
+
   /* --color-indigo: #1E2A44; */
   --color-accent: #7FA99B;
   --color-paper: #EFE6D8;
   
   --font-sans: 'Inter', sans-serif;
-
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
-  --radius-2xl: 0px;
-  --radius-3xl: 0px;
-  --radius-full: 0px;
 
   --shadow-sm: none;
   --shadow-md: none;

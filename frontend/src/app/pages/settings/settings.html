@@ -1,0 +1,212 @@
+<div class="h-screen flex flex-col bg-beige font-sans text-indigo overflow-hidden">
+    <app-navbar></app-navbar>
+
+    <div class="flex flex-1 overflow-hidden">
+        <app-sidebar></app-sidebar>
+
+        <main class="flex-1 overflow-y-auto w-full p-6 md:p-12 lg:p-16">
+            <div class="max-w-[1000px] mx-auto">
+
+                <header class="mb-12">
+                    <h1 class="font-serif text-5xl md:text-6xl text-indigo mb-2">Settings</h1>
+                    <p class="text-xs tracking-widest uppercase opacity-70">Manage your identity</p>
+                    <div class="h-px bg-indigo/20 w-full mt-8"></div>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+
+                    <div class="md:col-span-4 flex flex-col gap-2 border-r border-indigo/10 pr-8 hidden md:flex">
+                        <button (click)="activeTab.set('profile')" [class.border-sage]="activeTab() === 'profile'"
+                            [class.border-transparent]="activeTab() !== 'profile'"
+                            class="text-indigo text-left px-4 py-3 bg-indigo/5 border-l-2 text-xs font-black uppercase tracking-widest transition-opacity hover:opacity-100"
+                            [class.opacity-50]="activeTab() !== 'profile'">
+                            Public Profile
+                        </button>
+                        <button (click)="activeTab.set('security')" [class.border-sage]="activeTab() === 'security'"
+                            [class.border-transparent]="activeTab() !== 'security'"
+                            class="text-indigo text-left px-4 py-3 bg-indigo/5 border-l-2 text-xs font-black uppercase tracking-widest transition-opacity hover:opacity-100"
+                            [class.opacity-50]="activeTab() !== 'security'">
+                            Account Security
+                        </button>
+                        <button (click)="activeTab.set('notifications')"
+                            [class.border-sage]="activeTab() === 'notifications'"
+                            [class.border-transparent]="activeTab() !== 'notifications'"
+                            class="text-indigo text-left px-4 py-3 bg-indigo/5 border-l-2 text-xs font-black uppercase tracking-widest transition-opacity hover:opacity-100"
+                            [class.opacity-50]="activeTab() !== 'notifications'">
+                            Notifications
+                        </button>
+                    </div>
+
+                    <div class="md:col-span-8">
+                        @if (isLoading()) {
+                        <div class="flex items-center justify-center py-20 opacity-50">
+                            <span class="material-symbols-outlined animate-spin text-4xl">sync</span>
+                        </div>
+                        } @else {
+
+                        @if (activeTab() === 'profile') {
+                        <form (ngSubmit)="onSubmitProfile()" class="flex flex-col gap-10">
+                            <section
+                                class="flex flex-col sm:flex-row items-center gap-8 bg-white/20 p-8 border border-indigo/10">
+                                <label
+                                    class="relative size-32 rounded-full border border-indigo overflow-hidden group cursor-pointer shrink-0 bg-indigo/5 flex items-center justify-center">
+                                    @if (imagePreview()) {
+                                    <img [src]="imagePreview()" class="w-full h-full object-cover" alt="Avatar" />
+                                    } @else {
+                                    <span class="material-symbols-outlined text-4xl opacity-40">person</span>
+                                    }
+                                    <div
+                                        class="absolute inset-0 bg-indigo/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-beige">
+                                        <span class="material-symbols-outlined text-xl mb-1">photo_camera</span>
+                                        <span class="text-[8px] font-black uppercase tracking-widest">Upload</span>
+                                    </div>
+                                    <input type="file" (change)="onFileSelected($event)" accept="image/*"
+                                        class="hidden" />
+                                </label>
+
+                                <div class="flex flex-col text-center sm:text-left">
+                                    <h3 class="font-serif text-2xl text-indigo mb-1">Profile Photo</h3>
+                                    <p
+                                        class="text-[10px] uppercase tracking-widest opacity-60 max-w-[250px] leading-relaxed">
+                                        This image will be displayed on your listings and exchange requests.
+                                    </p>
+                                </div>
+                            </section>
+
+                            <section class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                <div class="flex flex-col">
+                                    <label
+                                        class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2 pl-1">Reader
+                                        Alias (Username)</label>
+                                    <input [(ngModel)]="userData.username" name="username"
+                                        class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-lg focus:ring-0 focus:border-sage transition-colors"
+                                        required />
+                                </div>
+                                <div class="flex flex-col">
+                                    <label
+                                        class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2 pl-1">Email
+                                        Address</label>
+                                    <input [(ngModel)]="userData.email" name="email" type="email"
+                                        class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-lg focus:ring-0 focus:border-sage transition-colors"
+                                        required />
+                                </div>
+                                <div class="flex flex-col">
+                                    <label
+                                        class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2 pl-1">City</label>
+                                    <input [(ngModel)]="userData.location.city" name="city"
+                                        class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-lg focus:ring-0 focus:border-sage transition-colors"
+                                        placeholder="e.g. Zurich" />
+                                </div>
+                                <div class="flex flex-col">
+                                    <label
+                                        class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2 pl-1">State
+                                        / Region</label>
+                                    <input [(ngModel)]="userData.location.state" name="state"
+                                        class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-lg focus:ring-0 focus:border-sage transition-colors"
+                                        placeholder="e.g. ZH" />
+                                </div>
+                            </section>
+
+                            <section class="mt-4 pt-8 border-t border-indigo/10">
+                                <div class="mb-6">
+                                    <h3 class="font-serif text-2xl text-indigo mb-1">Reading Preferences</h3>
+                                    <p class="text-[10px] uppercase tracking-widest opacity-60">Select the genres you
+                                        want to see on your dashboard.</p>
+                                </div>
+                                <div class="flex flex-wrap gap-3">
+                                    @for (genre of availableGenres; track genre) {
+                                    <button type="button" (click)="togglePreference(genre)"
+                                        [class.bg-sage]="userData.preferences.includes(genre)"
+                                        [class.text-indigo]="userData.preferences.includes(genre)"
+                                        [class.border-sage]="userData.preferences.includes(genre)"
+                                        [class.bg-transparent]="!userData.preferences.includes(genre)"
+                                        [class.text-indigo-60]="!userData.preferences.includes(genre)"
+                                        [class.border-indigo-30]="!userData.preferences.includes(genre)"
+                                        class="border px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors hover:border-indigo">
+                                        {{ genre }}
+                                    </button>
+                                    }
+                                </div>
+                            </section>
+
+                            <footer class="pt-6 border-t border-indigo/20 flex justify-end">
+                                <button type="submit" [disabled]="isSaving()"
+                                    class="bg-sage text-indigo px-10 py-4 text-xs font-black uppercase tracking-[0.2em] hover:brightness-95 transition-all disabled:opacity-50 min-w-[200px]">
+                                    {{ isSaving() ? 'Saving...' : 'Save Changes' }}
+                                </button>
+                            </footer>
+                        </form>
+                        }
+
+                        @if (activeTab() === 'security') {
+                        <form (ngSubmit)="onSubmitPassword()" class="flex flex-col gap-10">
+                            <section class="flex flex-col gap-8">
+                                <div class="flex flex-col max-w-md">
+                                    <label
+                                        class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2 pl-1">Current
+                                        Password</label>
+                                    <input [(ngModel)]="passwordData.currentPassword" name="currentPassword"
+                                        type="password"
+                                        class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-lg focus:ring-0 focus:border-sage transition-colors"
+                                        required />
+                                </div>
+                                <div class="flex flex-col max-w-md">
+                                    <label
+                                        class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2 pl-1">New
+                                        Password</label>
+                                    <input [(ngModel)]="passwordData.newPassword" name="newPassword" type="password"
+                                        class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-lg focus:ring-0 focus:border-sage transition-colors"
+                                        required />
+                                </div>
+                                <div class="flex flex-col max-w-md">
+                                    <label
+                                        class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2 pl-1">Confirm
+                                        New Password</label>
+                                    <input [(ngModel)]="passwordData.confirmPassword" name="confirmPassword"
+                                        type="password"
+                                        class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-lg focus:ring-0 focus:border-sage transition-colors"
+                                        required />
+                                </div>
+                            </section>
+
+                            <footer class="pt-6 border-t border-indigo/20 flex justify-start">
+                                <button type="submit" [disabled]="isSaving()"
+                                    class="bg-indigo text-beige px-10 py-4 text-xs font-black uppercase tracking-[0.2em] hover:brightness-125 transition-all disabled:opacity-50 min-w-[200px]">
+                                    {{ isSaving() ? 'Updating...' : 'Update Password' }}
+                                </button>
+                            </footer>
+                        </form>
+                        }
+
+                        @if (activeTab() === 'notifications') {
+                        <div class="flex flex-col gap-4">
+                            @for (note of notifications(); track note.id) {
+                            <div
+                                class="p-6 border border-indigo/20 bg-white/20 flex gap-4 items-start transition-all hover:border-indigo/40">
+                                <div class="flex-1">
+                                    <p class="text-[9px] font-bold uppercase tracking-widest mb-2"
+                                        [ngClass]="note.type === 'Action Required' ? 'text-red-700' : 'text-sage'">
+                                        {{ note.type }}
+                                    </p>
+                                    <p class="text-sm font-medium text-indigo leading-relaxed">{{ note.message }}</p>
+                                    <p class="text-[10px] uppercase tracking-widest opacity-50 mt-3">{{ note.date }}</p>
+                                </div>
+                            </div>
+                            } @empty {
+                            <div class="py-16 text-center border border-dashed border-indigo/20 bg-indigo/5">
+                                <span
+                                    class="material-symbols-outlined text-4xl text-indigo/20 mb-4">notifications_off</span>
+                                <p class="text-[10px] uppercase tracking-widest opacity-50 font-bold">You are all caught
+                                    up.</p>
+                            </div>
+                            }
+                        </div>
+                        }
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>

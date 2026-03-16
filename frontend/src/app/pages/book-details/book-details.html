@@ -1,0 +1,125 @@
+<div class="h-screen flex flex-col bg-beige font-sans text-indigo overflow-hidden">
+    <app-navbar></app-navbar>
+
+    <div class="flex flex-1 overflow-hidden">
+
+        <main class="flex-1 overflow-hidden w-full p-4 lg:p-8 relative flex flex-col">
+            <div class="max-w-250 mx-auto w-full h-full flex flex-col justify-center">
+
+                @if (isLoading()) {
+                <div class="flex items-center justify-center flex-1">
+                    <span class="material-symbols-outlined animate-spin text-4xl opacity-50">sync</span>
+                </div>
+                } @else if (book()) {
+
+                <a routerLink="/browse"
+                    class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest border-b border-indigo pb-0.5 mb-6 hover:opacity-60 transition-opacity self-start shrink-0">
+                    <span class="material-symbols-outlined text-xs">arrow_back</span>
+                    Back to Archive
+                </a>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 flex-1 min-h-0">
+
+                    <div class="lg:col-span-5 h-full flex items-center justify-center min-h-0">
+                        <div
+                            class="w-full max-w-90 aspect-3/4 bg-indigo/5 border border-indigo relative overflow-hidden shrink-0 shadow-[0_10px_40px_-15px_rgba(30,42,68,0.2)]">
+                            @if (book().images && book().images.length > 0) {
+                            <img [src]="book().images[0]" class="w-full h-full object-cover" alt="Cover" />
+                            } @else {
+                            <div class="w-full h-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-indigo/20 text-6xl">auto_stories</span>
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 flex flex-col py-2 lg:py-4 min-h-0 h-full">
+                        <div class="shrink-0">
+                            <h1 class="font-serif text-3xl md:text-5xl text-indigo leading-tight mb-2 line-clamp-2">{{
+                                book().title }}</h1>
+                            <p class="text-lg md:text-xl font-medium italic opacity-80 line-clamp-1">By {{ book().author
+                                }}</p>
+                            @if (book().isbn) {
+                            <p class="text-[10px] font-bold uppercase tracking-widest opacity-50 mt-2">ISBN: {{
+                                book().isbn }}</p>
+                            }
+                        </div>
+
+                        <div class="h-px bg-indigo/20 w-full my-5 md:my-6 shrink-0"></div>
+
+                        <div class="grid grid-cols-2 gap-6 mb-4 shrink-0">
+                            <div>
+                                <p class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-1">Condition</p>
+                                <p class="text-sm font-medium">{{ book().condition }}</p>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-1">Status</p>
+                                <p class="text-[10px] font-black uppercase tracking-widest"
+                                    [ngClass]="book().status === 'Available' ? 'text-sage' : 'text-indigo/50'">
+                                    {{ book().status }}
+                                </p>
+                            </div>
+
+                            <div class="col-span-2">
+                                <p class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2">Owned By</p>
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-indigo/10 border border-indigo overflow-hidden shrink-0">
+                                        @if (book().owner?.avatar) {
+                                        <img [src]="book().owner.avatar" class="w-full h-full object-cover"
+                                            alt="Owner Avatar">
+                                        } @else {
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-indigo/40 text-sm">person</span>
+                                        </div>
+                                        }
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium">@{{ book().owner?.username }}</p>
+                                        @if (book().owner?.location?.city) {
+                                        <p class="text-[10px] uppercase tracking-widest opacity-60 mt-0.5">
+                                            {{ book().owner.location.city }}, {{ book().owner.location.state }}
+                                        </p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 mb-6 flex flex-col">
+                            <p class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-2">Categorization</p>
+                            <div class="flex flex-wrap gap-2">
+                                @for (g of book().genre; track g) {
+                                <span
+                                    class="text-[9px] border border-sage text-sage px-2 py-1 font-bold uppercase tracking-widest">{{
+                                    g }}</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mt-auto pt-6 border-t border-indigo/20 shrink-0">
+                            @if (book().owner?._id !== currentUserId() && book().status === 'Available') {
+                            <button (click)="requestExchange()"
+                                class="w-full bg-sage text-indigo py-4 text-xs font-black uppercase tracking-[0.2em] hover:brightness-95 transition-all">
+                                Request Exchange
+                            </button>
+                            } @else if (book().owner?._id === currentUserId()) {
+                            <a routerLink="/my-library"
+                                class="block w-full text-center border border-indigo py-4 text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo hover:text-beige transition-all">
+                                Manage in Library
+                            </a>
+                            } @else {
+                            <button disabled
+                                class="w-full bg-indigo/10 text-indigo/50 py-4 text-xs font-black uppercase tracking-[0.2em] cursor-not-allowed border border-indigo/20">
+                                Currently Unavailable
+                            </button>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+                }
+            </div>
+        </main>
+    </div>
+</div>

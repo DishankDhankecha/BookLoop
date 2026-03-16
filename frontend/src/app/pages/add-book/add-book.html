@@ -1,0 +1,88 @@
+<div class="h-screen flex flex-col bg-beige font-sans text-indigo overflow-hidden">
+    <app-navbar></app-navbar>
+
+    <div class="flex flex-1 overflow-hidden">
+        <app-sidebar></app-sidebar>
+
+        <main class="flex-1 overflow-y-auto w-full p-6 md:p-12 lg:p-16">
+            <div class="max-w-200 mx-auto">
+                <header class="mb-12">
+                    <h1 class="font-serif text-5xl md:text-6xl text-indigo mb-2">List a Volume</h1>
+                    <p class="text-xs tracking-widest uppercase opacity-70">Add to the community archive</p>
+                    <div class="h-px bg-indigo/20 w-full mt-8"></div>
+                </header>
+
+                <form (ngSubmit)="onSubmit()" class="flex flex-col gap-10">
+                    <section class="flex flex-col md:flex-row gap-8 items-start">
+                        <label class="w-40 md:w-48 aspect-3/4 border border-indigo bg-indigo/5 relative overflow-hidden group cursor-pointer shrink-0">
+                            @if (imagePreview()) {
+                                <img [src]="imagePreview()" class="w-full h-full object-cover" alt="Cover Preview" />
+                            } @else {
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-4xl opacity-30 group-hover:opacity-100 transition-opacity">add_a_photo</span>
+                                </div>
+                            }
+                            <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+                        </label>
+
+                        <div class="flex-1 w-full flex flex-col gap-6">
+                            <div class="flex flex-col">
+                                <label class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-1 pl-1">Book Title</label>
+                                <input [(ngModel)]="bookData.title" name="title" class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-2xl font-serif text-indigo focus:ring-0 focus:border-sage transition-colors" required />
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="flex flex-col">
+                                    <label class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-1 pl-1">Author</label>
+                                    <input [(ngModel)]="bookData.author" name="author" class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-lg focus:ring-0 focus:border-sage transition-colors" required />
+                                </div>
+                                <div class="flex flex-col">
+                                    <label class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-1 pl-1">ISBN (Optional)</label>
+                                    <input [(ngModel)]="bookData.isbn" name="isbn" class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-3 px-1 text-lg focus:ring-0 focus:border-sage transition-colors" />
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col">
+                                <label class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-1 pl-1">Condition</label>
+                                <select [(ngModel)]="bookData.condition" name="condition" class="w-full bg-transparent border border-indigo p-4 text-sm focus:ring-0 focus:border-sage cursor-pointer">
+                                    <option value="Like New">Like New</option>
+                                    <option value="Read Once">Read Once</option>
+                                    <option value="Heavily Loved">Heavily Loved</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mt-4 pt-8 border-t border-indigo/10">
+                        <div class="mb-6">
+                            <h3 class="font-serif text-2xl text-indigo mb-1">Categorization</h3>
+                            <p class="text-[10px] uppercase tracking-widest opacity-60">Select all applicable genres.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            @for (genre of availableGenres; track genre) {
+                                <button type="button" 
+                                        (click)="toggleGenre(genre)"
+                                        [class.bg-sage]="bookData.genre.includes(genre)"
+                                        [class.text-indigo]="bookData.genre.includes(genre)"
+                                        [class.border-sage]="bookData.genre.includes(genre)"
+                                        [class.bg-transparent]="!bookData.genre.includes(genre)"
+                                        [class.text-indigo-60]="!bookData.genre.includes(genre)"
+                                        [class.border-indigo-30]="!bookData.genre.includes(genre)"
+                                        class="border px-4 py-2 text-[10px] font-black uppercase tracking-widest transition-colors hover:border-indigo">
+                                    {{ genre }}
+                                </button>
+                            }
+                        </div>
+                    </section>
+
+                    <footer class="pt-6 border-t border-indigo/20 flex justify-end">
+                        <button type="submit" [disabled]="isSubmitting()" class="bg-sage text-indigo px-12 py-4 text-xs font-black uppercase tracking-[0.2em] hover:brightness-95 transition-all disabled:opacity-50 min-w-50">
+                            {{ isSubmitting() ? 'Publishing...' : 'Publish Listing' }}
+                        </button>
+                    </footer>
+                </form>
+
+            </div>
+        </main>
+    </div>
+</div>

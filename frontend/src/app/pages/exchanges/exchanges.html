@@ -1,0 +1,240 @@
+<div class="h-screen flex flex-col bg-beige font-sans text-indigo overflow-hidden">
+    <app-navbar></app-navbar>
+
+    <div class="flex flex-1 overflow-hidden">
+        <app-sidebar></app-sidebar>
+
+        <main class="flex-1 overflow-y-auto w-full p-6 md:p-12 lg:p-16">
+            <div class="max-w-300 mx-auto flex flex-col gap-12">
+
+                <header>
+                    <h1 class="font-serif text-5xl md:text-6xl text-indigo mb-2">Exchange Hub</h1>
+                    <p class="text-xs tracking-widest uppercase opacity-70">Manage your pending loops</p>
+
+                    <div class="flex gap-8 mt-10 border-b border-indigo/20">
+                        <button (click)="currentView.set('active')" [class.border-sage]="currentView() === 'active'"
+                            [class.text-indigo]="currentView() === 'active'"
+                            [class.border-transparent]="currentView() !== 'active'"
+                            [class.opacity-50]="currentView() !== 'active'"
+                            class="pb-3 text-xs font-black uppercase tracking-[0.2em] border-b-2 hover:opacity-100 transition-all">
+                            Active Loops
+                        </button>
+                        <button (click)="currentView.set('history')" [class.border-sage]="currentView() === 'history'"
+                            [class.text-indigo]="currentView() === 'history'"
+                            [class.border-transparent]="currentView() !== 'history'"
+                            [class.opacity-50]="currentView() !== 'history'"
+                            class="pb-3 text-xs font-black uppercase tracking-[0.2em] border-b-2 hover:opacity-100 transition-all">
+                            Archive
+                        </button>
+                    </div>
+                </header>
+
+                @if (currentView() === 'active') {
+                <section>
+                    <h2 class="text-xs tracking-widest uppercase font-bold mb-6 border-l-2 border-sage pl-4">Action
+                        Required (Incoming)</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        @for (req of activeIncoming(); track req._id) {
+                        <div class="border border-indigo p-6 bg-white/30 flex gap-6 group transition-all">
+                            <div
+                                class="w-24 md:w-32 shrink-0 aspect-3/4 border border-indigo bg-indigo/5 relative overflow-hidden">
+                                @if (req.book?.images && req.book.images.length > 0) {
+                                <img [src]="req.book.images[0]" class="w-full h-full object-cover" alt="Cover" />
+                                } @else {
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-indigo/20 text-3xl">auto_stories</span>
+                                </div>
+                                }
+                            </div>
+
+                            <div class="flex flex-col flex-1">
+                                <div class="mb-3">
+                                    <span
+                                        class="text-[9px] font-black tracking-widest uppercase px-2 py-1 border border-indigo bg-indigo/5 inline-block">
+                                        {{ req.status }}
+                                    </span>
+                                </div>
+                                <h3 class="font-serif text-2xl text-indigo leading-tight mb-1 line-clamp-2">{{
+                                    req.book?.title }}</h3>
+                                <p class="text-[10px] uppercase tracking-widest opacity-60 mb-4">Requested by @{{
+                                    req.requester?.username }}</p>
+
+                                @if (req.status === 'Pending') {
+                                <div class="flex gap-2 mt-auto pt-4 border-t border-indigo/10">
+                                    <button (click)="updateStatus(req._id, 'Accepted')"
+                                        class="flex-1 bg-sage text-indigo py-3 text-[10px] font-black uppercase tracking-[0.2em] hover:brightness-95">
+                                        Accept
+                                    </button>
+                                    <button (click)="updateStatus(req._id, 'Declined')"
+                                        class="flex-1 border border-indigo py-3 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo hover:text-beige transition-colors">
+                                        Decline
+                                    </button>
+                                </div>
+                                } @else if (req.status === 'Accepted') {
+                                <div class="flex mt-auto pt-4 border-t border-indigo/10">
+                                    <button (click)="updateStatus(req._id, 'Completed')"
+                                        class="w-full bg-indigo text-beige py-3 text-[10px] font-black uppercase tracking-[0.2em] hover:opacity-90 transition-opacity">
+                                        Mark as Handed Over
+                                    </button>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                        } @empty {
+                        <div
+                            class="col-span-full border border-dashed border-indigo/20 p-8 flex items-center justify-center">
+                            <p class="text-[10px] uppercase tracking-widest opacity-50 font-bold">No incoming requests
+                                right now.</p>
+                        </div>
+                        }
+                    </div>
+                </section>
+
+                <section class="mt-8">
+                    <h2
+                        class="text-xs tracking-widest uppercase font-bold mb-6 border-l-2 border-indigo/30 pl-4 opacity-70">
+                        Awaiting Response (Outgoing)</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @for (req of activeOutgoing(); track req._id) {
+                        <div class="border border-indigo/40 p-5 bg-transparent flex gap-4 opacity-80">
+                            <div
+                                class="w-16 shrink-0 aspect-3/4 border border-indigo/40 bg-indigo/5 relative overflow-hidden">
+                                @if (req.book?.images && req.book.images.length > 0) {
+                                <img [src]="req.book.images[0]" class="w-full h-full object-cover grayscale opacity-80"
+                                    alt="Cover" />
+                                } @else {
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-indigo/20 text-xl">auto_stories</span>
+                                </div>
+                                }
+                            </div>
+
+                            <div class="flex flex-col flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-serif text-lg text-indigo line-clamp-2 pr-2">{{ req.book?.title }}
+                                    </h3>
+                                </div>
+                                <p class="text-[9px] uppercase tracking-widest opacity-60 mb-3">Owned by @{{
+                                    req.owner?.username }}</p>
+
+                                <div class="mt-auto flex flex-col items-start w-full gap-2">
+                                    <div
+                                        class="flex justify-between items-center w-full mt-2 border-t border-indigo/10 pt-3">
+                                        <span
+                                            class="text-[8px] font-black tracking-widest uppercase px-2 py-1 border border-indigo/40 inline-block">
+                                            {{ req.status }}
+                                        </span>
+
+                                        @if (req.status === 'Pending' || req.status === 'Accepted') {
+                                        <button (click)="cancelRequest(req._id)"
+                                            class="text-[9px] font-bold text-red-700 hover:text-indigo uppercase tracking-widest transition-colors border-b border-red-700 hover:border-indigo pb-0.5">
+                                            Cancel Request
+                                        </button>
+                                        }
+                                    </div>
+
+                                    @if (req.status === 'Accepted' && req.owner?.email) {
+                                    <a [href]="'mailto:' + req.owner.email"
+                                        class="text-[9px] font-bold text-sage hover:text-indigo transition-colors flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[10px]">mail</span>
+                                        {{ req.owner.email }}
+                                    </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        } @empty {
+                        <div
+                            class="col-span-full border border-dashed border-indigo/20 p-8 flex items-center justify-center">
+                            <p class="text-[10px] uppercase tracking-widest opacity-50 font-bold">You haven't requested
+                                any books yet.</p>
+                        </div>
+                        }
+                    </div>
+                </section>
+                }
+
+                @if (currentView() === 'history') {
+                <section>
+                    <h2
+                        class="text-xs tracking-widest uppercase font-bold mb-6 border-l-2 border-indigo/30 pl-4 opacity-70">
+                        Incoming History</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @for (req of historyIncoming(); track req._id) {
+                        <div class="border border-indigo/20 p-5 bg-transparent flex gap-4 opacity-60">
+                            <div
+                                class="w-16 shrink-0 aspect-[3/4] border border-indigo/20 bg-indigo/5 relative overflow-hidden">
+                                @if (req.book?.images && req.book.images.length > 0) {
+                                <img [src]="req.book.images[0]" class="w-full h-full object-cover grayscale"
+                                    alt="Cover" />
+                                }
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <h3 class="font-serif text-lg text-indigo line-clamp-1">{{ req.book?.title }}</h3>
+                                @if (req.status === 'Completed') {
+                                <p class="text-[9px] uppercase tracking-widest mb-1">Handed to @{{
+                                    req.requester?.username }}</p>
+                                <span
+                                    class="text-[8px] font-black tracking-widest uppercase opacity-80 text-sage">Completed</span>
+                                } @else if (req.status === 'Declined') {
+                                <p class="text-[9px] uppercase tracking-widest mb-1">Requested by @{{
+                                    req.requester?.username }}</p>
+                                <span
+                                    class="text-[8px] font-black tracking-widest uppercase opacity-80 text-red-700">Declined</span>
+                                }
+                            </div>
+                        </div>
+                        } @empty {
+                        <div
+                            class="col-span-full border border-dashed border-indigo/20 p-8 flex items-center justify-center">
+                            <p class="text-[10px] uppercase tracking-widest opacity-50 font-bold">No completed history
+                                yet.</p>
+                        </div>
+                        }
+                    </div>
+                </section>
+
+                <section class="mt-8">
+                    <h2
+                        class="text-xs tracking-widest uppercase font-bold mb-6 border-l-2 border-indigo/30 pl-4 opacity-70">
+                        Outgoing History</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @for (req of historyOutgoing(); track req._id) {
+                        <div class="border border-indigo/20 p-5 bg-transparent flex gap-4 opacity-60">
+                            <div
+                                class="w-16 shrink-0 aspect-[3/4] border border-indigo/20 bg-indigo/5 relative overflow-hidden">
+                                @if (req.book?.images && req.book.images.length > 0) {
+                                <img [src]="req.book.images[0]" class="w-full h-full object-cover grayscale"
+                                    alt="Cover" />
+                                }
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <h3 class="font-serif text-lg text-indigo line-clamp-1">{{ req.book?.title }}</h3>
+                                @if (req.status === 'Completed') {
+                                <p class="text-[9px] uppercase tracking-widest mb-1">Received from @{{
+                                    req.owner?.username }}</p>
+                                <span
+                                    class="text-[8px] font-black tracking-widest uppercase opacity-80 text-sage">Completed</span>
+                                } @else if (req.status === 'Declined') {
+                                <p class="text-[9px] uppercase tracking-widest mb-1">Owned by @{{ req.owner?.username }}
+                                </p>
+                                <span
+                                    class="text-[8px] font-black tracking-widest uppercase opacity-80 text-red-700">Declined</span>
+                                }
+                            </div>
+                        </div>
+                        } @empty {
+                        <div
+                            class="col-span-full border border-dashed border-indigo/20 p-8 flex items-center justify-center">
+                            <p class="text-[10px] uppercase tracking-widest opacity-50 font-bold">No completed history
+                                yet.</p>
+                        </div>
+                        }
+                    </div>
+                </section>
+                }
+
+            </div>
+        </main>
+    </div>
+</div>

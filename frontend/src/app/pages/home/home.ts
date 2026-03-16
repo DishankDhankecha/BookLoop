@@ -7,10 +7,11 @@ import { HowItWorks } from '../../components/how-it-works/how-it-works';
 import { Features } from '../../components/features/features';
 import { JoinUs } from "../../components/join-us/join-us";
 import { Footer } from "../../components/footer/footer";
+import { Navbar } from "../../components/navbar/navbar";
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, Hero, Stats, Featured, HowItWorks, Features, JoinUs, Footer],
+  imports: [CommonModule, Hero, Stats, Featured, HowItWorks, Features, JoinUs, Footer, Navbar],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

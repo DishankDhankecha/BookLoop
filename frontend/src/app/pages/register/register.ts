@@ -5,10 +5,11 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
-  imports: [RouterLink , FormsModule],
+  imports: [RouterLink, FormsModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
+
 export class Register {
   userData = {
     username: '',
@@ -19,12 +20,12 @@ export class Register {
       state: ''
     }
   };
-  
+
   showPassword = signal(false);
   isLoading = signal(false);
   errorMessage = signal('');
 
-  private auth = inject(Auth);
+  private authService = inject(Auth);
   private router = inject(Router);
 
   togglePassword() {
@@ -40,10 +41,9 @@ export class Register {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    this.auth.register(this.userData).subscribe({
-      next: (res) => {
-        this.auth.saveToken(res.token);
-        this.router.navigate(['/']);
+    this.authService.register(this.userData).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
         this.isLoading.set(false);
       },
       error: (err) => {

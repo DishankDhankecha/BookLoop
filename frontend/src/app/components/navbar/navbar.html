@@ -1,89 +1,57 @@
-<nav class="bg-primary border-b border-[#1E2A44]/10 w-full top-0 z-50">
+<nav class="bg-primary border-b border-indigo/10 w-full top-0 z-50">
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex justify-between h-20">
 
       <div class="shrink-0 flex items-center">
-        <a routerLink="/" class="text-2xl flex items-center gap-2 font-bold text-text-primary tracking-wide cursor-pointer no-underline">
+        <a routerLink="/"
+          class="text-2xl flex items-center gap-2 font-bold text-text-primary tracking-wide cursor-pointer no-underline">
           <img src="assets/icons/book.svg" alt="" class="w-10 h-10"> BookLoop
         </a>
       </div>
 
-      <div class="hidden md:flex items-center space-x-8">
-        @for (link of navLinks; track link.path) {
-        <a [routerLink]="link.path" routerLinkActive="text-text-primary" [routerLinkActiveOptions]="{exact: true}"
-          class="text-text-primar font-medium transition cursor-pointer no-underline">
-          {{ link.label }}
-        </a>
-        }
-      </div>
-
       <div class="hidden md:flex items-center space-x-5">
-
-        @if (isLoggedIn) {
-        <button title="#" class="flex items-center space-x-2 text-text-primary transition">
-          <span class="font-bold">Hello, User</span>
-          <div class="h-10 w-10 p-2 border border-text-primary rounded-4xl flex items-center justify-center text-text-primary">
-            <img class="h-8 w-8" src="assets/icons/user.svg" alt="">
+        @if (!isLoggedIn()) {
+          <div class="flex items-center space-x-3">
+            <a routerLink="/login"
+              class="px-4 py-2 border-2 border-text-primary text-text-primary font-semibold transition cursor-pointer no-underline hover:bg-text-primary hover:text-white">
+              Log In
+            </a>
+            <a routerLink="/register"
+              class="px-4 py-2 bg-text-primary text-white font-semibold shadow-md transition cursor-pointer no-underline hover:opacity-90">
+              Register
+            </a>
           </div>
-        </button>
         } @else {
-        <div class="flex items-center space-x-3">
-          <a routerLink="/login"
-            class="px-4 py-2 border-2 border-text-primary text-text-primary font-semibold transition cursor-pointer no-underline">
-            Log In
-          </a>
-          <a routerLink="/register"
-            class="px-4 py-2 bg-text-primary text-white font-semibold shadow-md transition cursor-pointer no-underline">
-            Register
-          </a>
-        </div>
+          <div class="flex items-center gap-4">
+            <a routerLink="/dashboard" class="h-10 w-10 rounded-full border-2 border-text-primary overflow-hidden bg-indigo/5 flex items-center justify-center">
+              @if (userAvatar()) {
+                <img [src]="userAvatar()" class="w-full h-full object-cover" alt="Profile">
+              } @else {
+                <span class="material-symbols-outlined text-text-primary">person</span>
+              }
+            </a>
+          </div>
         }
-
-      </div>
-
-      <div class="flex items-center md:hidden">
-        <button title="#" (click)="toggleMenu()" class="text-text-primary focus:outline-none">
-          <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            @if (!isMenuOpen) {
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-            } @else {
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            }
-          </svg>
-        </button>
       </div>
     </div>
   </div>
 
-  @if (isMenuOpen) {
   <div class="md:hidden bg-primary">
     <div class="px-4 pt-2 pb-6 space-y-2">
-
-      @for (link of navLinks; track link.path) {
-      <a [routerLink]="link.path" (click)="toggleMenu()" routerLinkActive="text-text-primary"
-        [routerLinkActiveOptions]="{exact: true}"
-        class="block px-3 py-2 text-base font-medium text-text-primary  cursor-pointer no-underline">
-        {{ link.label }}
-      </a>
-      }
-
-      <div class="my-2"></div>
-
-      @if (isLoggedIn) {
-      <div class="flex items-center space-x-2 px-3 py-  mt-2">
-        <span class="text-text-primary font-medium">My Account</span>
-      </div>
+      @if (!isLoggedIn()) {
+        <div class="grid grid-cols-2 gap-4 mt-4 px-3">
+          <a routerLink="/login"
+            class="text-center px-4 py-2 border border-text-primary text-text-primary font-semibold cursor-pointer no-underline">Log In</a>
+          <a routerLink="/register"
+            class="text-center px-4 py-2 bg-text-primary text-white font-semibold cursor-pointer no-underline">Register</a>
+        </div>
       } @else {
-      <div class="grid grid-cols-2 gap-4 mt-4 px-3">
-        <a routerLink="/login" (click)="toggleMenu()"
-          class="text-center px-4 py-2 border border-text-primary text-text-primary font-semibold cursor-pointer no-underline">Log
-          In</a>
-        <a routerLink="/register" (click)="toggleMenu()"
-          class="text-center px-4 py-2 bg-text-primary text-white font-semibold cursor-pointer no-underline">Register</a>
-      </div>
+        <div class="flex flex-col items-center gap-4 py-2">
+          <a routerLink="/dashboard" class="w-full text-center py-2 bg-text-primary text-white font-bold uppercase tracking-widest no-underline">
+            Go to Dashboard
+          </a>
+        </div>
       }
-
     </div>
   </div>
-  }
 </nav>

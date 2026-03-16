@@ -1,0 +1,8 @@
+.sidebar-active {
+    border-left: 3px solid #7FA99B;
+    background-color: rgba(127, 169, 155, 0.1);
+}
+
+.sharp-border {
+    border-radius: 0px !important;
+}
