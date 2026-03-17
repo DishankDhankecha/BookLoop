@@ -1,0 +1,146 @@
+<div class="h-screen flex bg-beige font-sans text-indigo overflow-hidden">
+
+    <aside class="w-64 h-full border-r border-indigo/20 flex flex-col bg-indigo/5 shrink-0">
+        <div class="p-8 border-b border-indigo/20">
+            <h1 class="text-2xl font-black tracking-tighter uppercase italic text-indigo">BookLoop</h1>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-sage mt-1">Admin Terminal</p>
+        </div>
+
+        <div class="flex-1 flex flex-col gap-2 p-4">
+            <button (click)="activeTab.set('overview')" [class.bg-indigo]="activeTab() === 'overview'"
+                [class.text-beige]="activeTab() === 'overview'" [class.bg-transparent]="activeTab() !== 'overview'"
+                [class.text-indigo]="activeTab() !== 'overview'"
+                class="text-left px-4 py-3 text-xs font-black uppercase tracking-widest transition-colors hover:bg-indigo hover:text-beige">
+                Overview
+            </button>
+            <button (click)="activeTab.set('users')" [class.bg-indigo]="activeTab() === 'users'"
+                [class.text-beige]="activeTab() === 'users'" [class.bg-transparent]="activeTab() !== 'users'"
+                [class.text-indigo]="activeTab() !== 'users'"
+                class="text-left px-4 py-3 text-xs font-black uppercase tracking-widest transition-colors hover:bg-indigo hover:text-beige">
+                User Management
+            </button>
+            <button (click)="activeTab.set('books')" [class.bg-indigo]="activeTab() === 'books'"
+                [class.text-beige]="activeTab() === 'books'" [class.bg-transparent]="activeTab() !== 'books'"
+                [class.text-indigo]="activeTab() !== 'books'"
+                class="text-left px-4 py-3 text-xs font-black uppercase tracking-widest transition-colors hover:bg-indigo hover:text-beige">
+                Global Archive
+            </button>
+            <button (click)="activeTab.set('exchanges')" [class.bg-indigo]="activeTab() === 'exchanges'"
+                [class.text-beige]="activeTab() === 'exchanges'" [class.bg-transparent]="activeTab() !== 'exchanges'"
+                [class.text-indigo]="activeTab() !== 'exchanges'"
+                class="text-left px-4 py-3 text-xs font-black uppercase tracking-widest transition-colors hover:bg-indigo hover:text-beige">
+                Exchange Logs
+            </button>
+        </div>
+
+        <div class="p-4 border-t border-indigo/20">
+            <button (click)="logout()"
+                class="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest text-red-700 hover:bg-red-700 hover:text-beige transition-colors">
+                Terminate Session
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto w-full p-8 lg:p-12">
+        <div class="max-w-300 mx-auto">
+
+            @if (isLoading()) {
+            <div class="flex items-center justify-center py-40">
+                <span class="material-symbols-outlined animate-spin text-4xl opacity-50">sync</span>
+            </div>
+            } @else {
+
+            @if (activeTab() === 'overview') {
+            <header class="mb-12">
+                <h2 class="font-serif text-5xl text-indigo mb-2">System Overview</h2>
+                <div class="h-px bg-indigo/20 w-full mt-8"></div>
+            </header>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-8 border border-indigo/20 bg-white/20">
+                    <p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">Total Readers</p>
+                    <p class="text-6xl font-serif text-indigo">{{ users().length }}</p>
+                </div>
+                <div class="p-8 border border-indigo/20 bg-white/20">
+                    <p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">Active Volumes</p>
+                    <p class="text-6xl font-serif text-indigo">{{ books().length }}</p>
+                </div>
+                <div class="p-8 border border-indigo/20 bg-white/20">
+                    <p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">Logged Exchanges</p>
+                    <p class="text-6xl font-serif text-indigo">{{ exchanges().length }}</p>
+                </div>
+            </div>
+            }
+
+            @if (activeTab() === 'users') {
+            <header class="mb-12">
+                <h2 class="font-serif text-5xl text-indigo mb-2">User Directory</h2>
+                <div class="h-px bg-indigo/20 w-full mt-8"></div>
+            </header>
+            <div class="flex flex-col gap-4">
+                @for (user of users(); track user._id) {
+                <div class="flex items-center justify-between p-6 border border-indigo/20 bg-white/20">
+                    <div>
+                        <p class="text-lg font-bold text-indigo">@{{ user.username }}</p>
+                        <p class="text-[10px] uppercase tracking-widest opacity-60">{{ user.email }} | {{ user.role }}
+                        </p>
+                    </div>
+                    @if (user.role !== 'admin') {
+                    <button (click)="deleteUser(user._id)"
+                        class="px-4 py-2 border border-red-700 text-red-700 text-[9px] font-black uppercase tracking-widest hover:bg-red-700 hover:text-beige transition-colors">
+                        Remove Access
+                    </button>
+                    }
+                </div>
+                }
+            </div>
+            }
+
+            @if (activeTab() === 'books') {
+            <header class="mb-12">
+                <h2 class="font-serif text-5xl text-indigo mb-2">Global Archive</h2>
+                <div class="h-px bg-indigo/20 w-full mt-8"></div>
+            </header>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @for (book of books(); track book._id) {
+                <div class="p-6 border border-indigo/20 bg-white/20 flex flex-col">
+                    <h4 class="font-serif text-xl text-indigo line-clamp-1">{{ book.title }}</h4>
+                    <p class="text-[10px] uppercase tracking-widest opacity-60 mt-1">Listed by @{{ book.owner?.username
+                        }}</p>
+                    <div class="mt-4 flex gap-2">
+                        <span
+                            class="text-[8px] font-black uppercase tracking-widest border border-indigo/30 px-2 py-1">{{
+                            book.status }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+
+            @if (activeTab() === 'exchanges') {
+            <header class="mb-12">
+                <h2 class="font-serif text-5xl text-indigo mb-2">Exchange Logs</h2>
+                <div class="h-px bg-indigo/20 w-full mt-8"></div>
+            </header>
+            <div class="flex flex-col gap-4">
+                @for (exchange of exchanges(); track exchange._id) {
+                <div
+                    class="p-6 border border-indigo/20 bg-white/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <p class="text-sm font-bold text-indigo">@{{ exchange.requester?.username }} <span
+                                class="opacity-50">requested from</span> @{{ exchange.owner?.username }}</p>
+                        <p class="text-[10px] uppercase tracking-widest opacity-60 mt-1">Volume: {{ exchange.book?.title
+                            }}</p>
+                    </div>
+                    <span class="text-[9px] font-black uppercase tracking-widest px-3 py-2 border"
+                        [ngClass]="exchange.status === 'Completed' ? 'border-sage text-sage' : (exchange.status === 'Declined' ? 'border-red-700 text-red-700' : 'border-indigo text-indigo')">
+                        {{ exchange.status }}
+                    </span>
+                </div>
+                }
+            </div>
+            }
+
+            }
+        </div>
+    </main>
+</div>

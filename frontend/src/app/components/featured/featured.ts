@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-featured',
-  imports: [CommonModule , RouterLink],
+  imports: [CommonModule],
   templateUrl: './featured.html',
   styleUrl: './featured.css',
 })

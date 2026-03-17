@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 })
 
 export class Login {
-  credentials = { email: '', password: '' };
+    credentials = { email: '', password: '' };
 
   showPassword = signal(false);
   isLoading = signal(false);
@@ -25,15 +25,26 @@ export class Login {
   }
 
   onSubmit() {
+    this.isLoading.set(true);
+
     this.authService.login(this.credentials).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         localStorage.setItem('token', response.token);
         localStorage.setItem('_id', response._id);
         localStorage.setItem('username', response.username);
+        localStorage.setItem('role', response.role);
 
-        this.router.navigate(['/browse']);
+        this.isLoading.set(false);
+
+        if (response.role === 'admin') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/browse']);
+        }
       },
       error: (err) => {
+        this.isLoading.set(false);
+        this.errorMessage.set('Invalid email or password.');
         alert('Invalid email or password.');
       }
     });

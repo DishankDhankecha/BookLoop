@@ -5,8 +5,8 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
 const bookRoutes = require('./routes/bookRoutes');
 const exchangeRoutes = require('./routes/exchangeRoutes');
-const User = require('./models/User');
 const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 dotenv.config()
 
@@ -24,22 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/exchanges', exchangeRoutes);
 app.use('/api/user', userRoutes);
-
-app.get('/api/user/:id', async (req, res) => {
-  try {
-    const userID = req.params.id;
-
-    const user = await User.findById(userID).populate('booksListed');
-
-    if (!user) return res.status(404).json({ message: "User Not Found" });
-
-    res.json(user);
-  }
-  catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
+app.use('/api/admin', adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 
