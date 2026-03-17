@@ -5,18 +5,59 @@
         <app-sidebar></app-sidebar>
 
         <main class="flex-1 overflow-y-auto w-full p-6 md:p-12">
-            <header class="max-w-[1200px] mx-auto mb-12">
+            <header class="max-w-300 mx-auto mb-10">
                 <h1 class="font-serif text-4xl md:text-5xl text-indigo mb-2">My Library</h1>
                 <p class="text-xs tracking-widest uppercase opacity-70">Manage your listed volumes</p>
                 <div class="h-px bg-indigo/20 w-full mt-6"></div>
             </header>
 
+            <section class="max-w-300 mx-auto flex flex-col md:flex-row gap-6 mb-10">
+                <div class="flex-1 relative flex items-center">
+                    <input [(ngModel)]="searchQuery"
+                        class="w-full outline-0 bg-transparent border-t-0 border-x-0 border-b border-indigo px-0 py-3 text-indigo placeholder:text-indigo/40 focus:ring-0 focus:border-sage text-lg font-medium transition-colors"
+                        placeholder="Search title, author, or ISBN..." type="text" />
+                    <span
+                        class="material-symbols-outlined absolute right-0 text-indigo/40 pointer-events-none">search</span>
+                </div>
+
+                <div class="flex flex-wrap md:flex-nowrap gap-4">
+                    <div class="relative flex items-center group w-full md:w-auto">
+                        <select [(ngModel)]="selectedStatus"
+                            class="w-full appearance-none border border-indigo pl-6 pr-12 py-3 bg-beige text-xs font-bold uppercase tracking-widest hover:bg-indigo/5 focus:ring-0 focus:border-sage transition-colors cursor-pointer outline-none">
+                            <option value="All">Status: All</option>
+                            <option value="Available">Available</option>
+                            <option value="Pending Exchange">Pending Exchange</option>
+                            <option value="Lent Out">Lent Out</option>
+                            <option value="Hidden">Hidden</option>
+                        </select>
+                        <span
+                            class="material-symbols-outlined absolute right-4 text-sm pointer-events-none">expand_more</span>
+                    </div>
+
+                    <div class="relative flex items-center group w-full md:w-auto">
+                        <select [(ngModel)]="selectedCondition"
+                            class="w-full appearance-none border border-indigo pl-6 pr-12 py-3 bg-beige text-xs font-bold uppercase tracking-widest hover:bg-indigo/5 focus:ring-0 focus:border-sage transition-colors cursor-pointer outline-none">
+                            <option value="All">Condition: All</option>
+                            <option value="Like New">Like New</option>
+                            <option value="Read Once">Read Once</option>
+                            <option value="Heavily Loved">Heavily Loved</option>
+                        </select>
+                        <span
+                            class="material-symbols-outlined absolute right-4 text-sm pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+            </section>
+
             <section class="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-12">
-                @for (book of myBooks(); track book._id) {
+                @for (book of filteredBooks(); track book._id) {
                 <div
                     class="flex flex-col border border-indigo bg-beige group hover:shadow-[0_10px_40px_-15px_rgba(30,42,68,0.2)] transition-all">
                     <div class="aspect-[3/4] overflow-hidden border-b border-indigo relative">
-                        @if (book.images && book.images.length > 0) {
+                        @if (book.imageUrl) {
+                        <img [src]="book.imageUrl"
+                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            alt="Cover" />
+                        } @else if (book.images && book.images.length > 0) {
                         <img [src]="book.images[0]"
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                             alt="Cover" />
@@ -48,9 +89,10 @@
                 } @empty {
                 <div
                     class="col-span-full py-20 flex flex-col items-center justify-center border border-dashed border-indigo/30 bg-indigo/5">
-                    <span class="material-symbols-outlined text-4xl text-indigo/40 mb-4">menu_book</span>
-                    <h3 class="font-serif text-2xl text-indigo mb-2">Your library is empty</h3>
-                    <p class="text-xs uppercase tracking-widest text-indigo/60 mb-6">You haven't listed any volumes yet.
+                    <span class="material-symbols-outlined text-4xl text-indigo/40 mb-4">search_off</span>
+                    <h3 class="font-serif text-2xl text-indigo mb-2">No volumes found</h3>
+                    <p class="text-xs uppercase tracking-widest text-indigo/60 mb-6 text-center max-w-sm">
+                        You either haven't listed any volumes yet, or none match your current filters.
                     </p>
                     <a routerLink="/add-book"
                         class="bg-sage text-indigo px-8 py-3 text-[10px] font-black tracking-[0.2em] uppercase hover:brightness-95">List
@@ -63,7 +105,8 @@
 
     @if (editingBook()) {
     <div class="absolute inset-0 bg-indigo/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-beige border border-indigo w-full max-w-md p-8 shadow-2xl flex flex-col">
+        <div
+            class="bg-beige border border-indigo w-full max-w-md p-8 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto">
             <h2 class="font-serif text-3xl mb-6 text-indigo">Edit Listing</h2>
 
             <div class="flex flex-col gap-5">
@@ -76,6 +119,13 @@
                 <div class="flex flex-col">
                     <label class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-1">Author</label>
                     <input [(ngModel)]="editingBook().author"
+                        class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-2 text-sm focus:ring-0 focus:border-sage" />
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-[9px] font-bold uppercase tracking-widest opacity-60 mb-1">Cover Image
+                        URL</label>
+                    <input [(ngModel)]="editingBook().imageUrl"
                         class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo py-2 text-sm focus:ring-0 focus:border-sage" />
                 </div>
 
@@ -113,7 +163,5 @@
             </div>
         </div>
     </div>
-
-
     }
 </div>

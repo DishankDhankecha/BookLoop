@@ -81,7 +81,11 @@
                                     class="flex gap-4 items-center group bg-white/20 border border-transparent hover:border-indigo/20 p-2 transition-all">
                                     <div
                                         class="w-12 md:w-16 aspect-3/4 bg-indigo/5 border border-indigo/20 shrink-0 relative overflow-hidden">
-                                        @if (book.images && book.images.length > 0) {
+                                        @if (book.imageUrl) {
+                                        <img [src]="book.imageUrl"
+                                            class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                                            alt="Cover" />
+                                        } @else if (book.images && book.images.length > 0) {
                                         <img [src]="book.images[0]"
                                             class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
                                             alt="Cover" />
@@ -126,10 +130,14 @@
                             <div class="space-y-4">
                                 @for (book of suggestedBooks(); track book._id) {
                                 <div [routerLink]="['/book', book._id]"
-                                    class="flex gap-4 items-center group bg-white/20 border border-transparent hover:border-indigo/20 p-2 transition-all">
+                                    class="flex gap-4 items-center group bg-white/20 border border-transparent hover:border-indigo/20 p-2 transition-all cursor-pointer">
                                     <div
                                         class="w-12 md:w-16 aspect-3/4 bg-indigo/5 border border-indigo/20 shrink-0 relative overflow-hidden">
-                                        @if (book.images && book.images.length > 0) {
+                                        @if (book.imageUrl) {
+                                        <img [src]="book.imageUrl"
+                                            class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
+                                            alt="Cover" />
+                                        } @else if (book.images && book.images.length > 0) {
                                         <img [src]="book.images[0]"
                                             class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all"
                                             alt="Cover" />
@@ -149,7 +157,7 @@
                                         <div class="flex items-center gap-2 mt-1">
                                             <span
                                                 class="text-[9px] border border-sage text-sage px-1 font-bold uppercase tracking-widest">{{
-                                                book.genre }}</span>
+                                                book.genre[0] }}</span>
                                         </div>
                                     </div>
                                 </div>

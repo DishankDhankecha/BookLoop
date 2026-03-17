@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { Navbar } from "../../components/dashboard/navbar/navbar";
 import { Sidebar } from "../../components/dashboard/sidebar/sidebar";
 import { CommonModule } from '@angular/common';
@@ -13,11 +13,40 @@ import { Book } from '../../services/book';
   styleUrl: './my-library.css',
 })
 
-export class MyLibrary {
-    private bookService = inject(Book);
+export class MyLibrary implements OnInit {
+  private bookService = inject(Book);
 
   myBooks = signal<any[]>([]);
   editingBook = signal<any | null>(null);
+
+  searchQuery = signal('');
+  selectedStatus = signal('All');
+  selectedCondition = signal('All');
+
+  filteredBooks = computed(() => {
+    let books = this.myBooks();
+    const query = this.searchQuery().toLowerCase();
+    const status = this.selectedStatus();
+    const condition = this.selectedCondition();
+
+    if (query) {
+      books = books.filter(book =>
+        book.title.toLowerCase().includes(query) ||
+        book.author.toLowerCase().includes(query) ||
+        (book.isbn && book.isbn.includes(query))
+      );
+    }
+
+    if (status !== 'All') {
+      books = books.filter(book => book.status === status);
+    }
+
+    if (condition !== 'All') {
+      books = books.filter(book => book.condition === condition);
+    }
+
+    return books;
+  });
 
   ngOnInit() {
     this.loadMyBooks();
@@ -27,8 +56,9 @@ export class MyLibrary {
     const userId = localStorage.getItem('_id');
     if (userId) {
       this.bookService.getUserBooks(userId).subscribe({
-        next: (user) => {
-          this.myBooks.set(user.booksListed || []);
+        next: (response: any) => {
+          const booksArray = Array.isArray(response) ? response : (response.booksListed || response.books || []);
+          this.myBooks.set(booksArray);
         },
         error: (err) => console.error(err)
       });

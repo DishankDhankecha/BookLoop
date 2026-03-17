@@ -65,7 +65,29 @@ const generateToken = (id) => {
     });
 }
 
+const bulkRegister = async (req, res) => {
+    try {
+        const users = req.body; 
+        
+        const hashedUsers = await Promise.all(users.map(async (user) => {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(user.password, salt);
+            return { ...user, password: hashedPassword };
+        }));
+
+        const createdUsers = await User.insertMany(hashedUsers, { ordered: false });
+        
+        res.status(201).json({ 
+            message: `${createdUsers.length} users created successfully!`,
+            insertedIds: createdUsers.map(u => u._id)
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     registerUser,
     loginUser,
+    bulkRegister
 } 

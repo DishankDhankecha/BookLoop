@@ -14,17 +14,20 @@
             @for (book of trendingBooks(); track book._id) {
             <div (click)="handleBookClick()" class="group flex flex-col gap-3 cursor-pointer">
                 <div class="w-full aspect-2/3 bg-gray-200 relative overflow-hidden">
-                    @if (book.images && book.images.length > 0) {
-                    <img [src]="book.images[0]" alt="Book Cover"
-                        class="absolute inset-0 object-cover w-full h-full bg-center transition-transform duration-500 group-hover:scale-105">
+                    @if (book.imageUrl) {
+                        <img [src]="book.imageUrl" alt="Book Cover"
+                            class="absolute inset-0 object-cover w-full h-full bg-center transition-transform duration-500 group-hover:scale-105">
+                    } @else if (book.images && book.images.length > 0) {
+                        <img [src]="book.images[0]" alt="Book Cover"
+                            class="absolute inset-0 object-cover w-full h-full bg-center transition-transform duration-500 group-hover:scale-105">
                     } @else {
-                    <div class="w-full h-full bg-indigo/5 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-indigo/20 text-4xl">auto_stories</span>
-                    </div>
+                        <div class="w-full h-full bg-indigo/5 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-indigo/20 text-4xl">auto_stories</span>
+                        </div>
                     }
                     <div
                         class="absolute top-2 left-2 bg-secondary text-text-primary text-[10px] uppercase tracking-widest font-bold px-2 py-1">
-                        {{ book.genre }}
+                        {{ book.genre[0] || book.genre }}
                     </div>
                 </div>
                 <div>

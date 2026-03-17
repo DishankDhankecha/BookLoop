@@ -40,33 +40,37 @@ export class Dashboard implements OnInit {
 
   loadDashboardData() {
     const userId = localStorage.getItem('_id');
-    let userPreferences: string[] = [];
 
     if (userId) {
       this.bookService.getUserBooks(userId).subscribe({
-        next: (user) => {
-          const listed = user.booksListed || [];
-          userPreferences = user.preferences || [];
+        next: (response: any) => {
+          const listed = Array.isArray(response) ? response : (response.booksListed || response.books || []);
+          const userPreferences = response.preferences || [];
+
           this.listedCount.set(listed.length);
           this.myRecentBooks.set([...listed].reverse().slice(0, 3));
+
+          this.bookService.getAllBooks().subscribe({
+            next: (books) => {
+              let publicBooks = books.filter(b => b.owner && b.owner._id !== userId && b.status === 'Available');
+
+              if (userPreferences.length > 0) {
+                const personalizedBooks = publicBooks.filter(b => {
+                  const bookGenres = Array.isArray(b.genre) ? b.genre : [b.genre];
+                  return bookGenres.some((g: string) => userPreferences.includes(g));
+                });
+
+                if (personalizedBooks.length > 0) {
+                  publicBooks = personalizedBooks;
+                }
+              }
+
+              this.suggestedBooks.set(publicBooks.reverse().slice(0, 3));
+            }
+          });
         }
       });
     }
-
-    this.bookService.getAllBooks().subscribe({
-      next: (books) => {
-        let publicBooks = books.filter(b => b.owner && b.owner._id !== userId && b.status === 'Available');
-
-        if (userPreferences.length > 0) {
-          const personalizedBooks = publicBooks.filter(b => userPreferences.includes(b.genre));
-          if (personalizedBooks.length > 0) {
-            publicBooks = personalizedBooks;
-          }
-        }
-
-        this.suggestedBooks.set(publicBooks.reverse().slice(0, 3));
-      }
-    });
 
     this.exchangeService.getIncomingRequests().subscribe({
       next: (incoming) => {

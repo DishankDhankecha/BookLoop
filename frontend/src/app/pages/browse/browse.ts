@@ -15,7 +15,7 @@ import { RouterLink } from "@angular/router";
 })
 
 export class Browse implements OnInit {
-    private bookService = inject(Book);
+  private bookService = inject(Book);
   private exchangeService = inject(Exchange);
 
   searchQuery = signal('');
@@ -56,7 +56,7 @@ export class Browse implements OnInit {
             owner: book.owner.username,
             condition: book.condition,
             genre: Array.isArray(book.genre) ? book.genre : [book.genre].filter(Boolean),
-            imageUrl: book.images && book.images.length > 0 ? book.images[0] : null
+            imageUrl: book.imageUrl || (book.images && book.images.length > 0 ? book.images[0] : null)
           }));
 
         this.availableBooks.set(publicBooks);

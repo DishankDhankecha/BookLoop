@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 })
 
 export class AddBook {
-    private bookService = inject(Book);
+  private bookService = inject(Book);
   private router = inject(Router);
 
   isSubmitting = signal(false);
@@ -30,7 +30,8 @@ export class AddBook {
     isbn: '',
     condition: 'Like New',
     genre: [] as string[],
-    images: [] as string[]
+    images: [] as string[],
+    imageUrl: ''
   };
 
   imagePreview = signal<string | null>(null);
