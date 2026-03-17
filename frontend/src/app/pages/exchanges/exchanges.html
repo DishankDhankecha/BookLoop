@@ -38,7 +38,9 @@
                         <div class="border border-indigo p-6 bg-white/30 flex gap-6 group transition-all">
                             <div
                                 class="w-24 md:w-32 shrink-0 aspect-3/4 border border-indigo bg-indigo/5 relative overflow-hidden">
-                                @if (req.book?.images && req.book.images.length > 0) {
+                                @if (req.book?.imageUrl) {
+                                <img [src]="req.book.imageUrl" class="w-full h-full object-cover" alt="Cover" />
+                                } @else if (req.book?.images && req.book.images.length > 0) {
                                 <img [src]="req.book.images[0]" class="w-full h-full object-cover" alt="Cover" />
                                 } @else {
                                 <div class="w-full h-full flex items-center justify-center">
@@ -99,7 +101,10 @@
                         <div class="border border-indigo/40 p-5 bg-transparent flex gap-4 opacity-80">
                             <div
                                 class="w-16 shrink-0 aspect-3/4 border border-indigo/40 bg-indigo/5 relative overflow-hidden">
-                                @if (req.book?.images && req.book.images.length > 0) {
+                                @if (req.book?.imageUrl) {
+                                <img [src]="req.book.imageUrl" class="w-full h-full object-cover grayscale opacity-80"
+                                    alt="Cover" />
+                                } @else if (req.book?.images && req.book.images.length > 0) {
                                 <img [src]="req.book.images[0]" class="w-full h-full object-cover grayscale opacity-80"
                                     alt="Cover" />
                                 } @else {
@@ -164,9 +169,16 @@
                         <div class="border border-indigo/20 p-5 bg-transparent flex gap-4 opacity-60">
                             <div
                                 class="w-16 shrink-0 aspect-[3/4] border border-indigo/20 bg-indigo/5 relative overflow-hidden">
-                                @if (req.book?.images && req.book.images.length > 0) {
+                                @if (req.book?.imageUrl) {
+                                <img [src]="req.book.imageUrl" class="w-full h-full object-cover grayscale"
+                                    alt="Cover" />
+                                } @else if (req.book?.images && req.book.images.length > 0) {
                                 <img [src]="req.book.images[0]" class="w-full h-full object-cover grayscale"
                                     alt="Cover" />
+                                } @else {
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-indigo/20 text-xl">auto_stories</span>
+                                </div>
                                 }
                             </div>
                             <div class="flex flex-col justify-center">
@@ -203,9 +215,16 @@
                         <div class="border border-indigo/20 p-5 bg-transparent flex gap-4 opacity-60">
                             <div
                                 class="w-16 shrink-0 aspect-[3/4] border border-indigo/20 bg-indigo/5 relative overflow-hidden">
-                                @if (req.book?.images && req.book.images.length > 0) {
+                                @if (req.book?.imageUrl) {
+                                <img [src]="req.book.imageUrl" class="w-full h-full object-cover grayscale"
+                                    alt="Cover" />
+                                } @else if (req.book?.images && req.book.images.length > 0) {
                                 <img [src]="req.book.images[0]" class="w-full h-full object-cover grayscale"
                                     alt="Cover" />
+                                } @else {
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-indigo/20 text-xl">auto_stories</span>
+                                </div>
                                 }
                             </div>
                             <div class="flex flex-col justify-center">

@@ -3,6 +3,7 @@ import { Navbar } from "../../components/dashboard/navbar/navbar";
 import { Sidebar } from "../../components/dashboard/sidebar/sidebar";
 import { CommonModule } from '@angular/common';
 import { Exchange } from '../../services/exchange';
+import { Book } from '../../services/book';
 
 @Component({
   selector: 'app-exchanges',
@@ -12,9 +13,11 @@ import { Exchange } from '../../services/exchange';
 })
 export class Exchanges implements OnInit {
   private exchangeService = inject(Exchange);
+  private bookService = inject(Book);
 
   incomingRequests = signal<any[]>([]);
   outgoingRequests = signal<any[]>([]);
+  allBooksDictionary = signal<any[]>([]);
 
   currentView = signal<'active' | 'history'>('active');
 
@@ -29,14 +32,47 @@ export class Exchanges implements OnInit {
   }
 
   loadRequests() {
+    this.bookService.getAllBooks().subscribe({
+      next: (books) => {
+        this.allBooksDictionary.set(books);
+        this.fetchExchangeData();
+      },
+      error: () => {
+        this.fetchExchangeData();
+      }
+    });
+  }
+
+  fetchExchangeData() {
     this.exchangeService.getIncomingRequests().subscribe({
-      next: (data) => this.incomingRequests.set(data),
+      next: (response: any) => {
+        const data = Array.isArray(response) ? response : (response.requests || response.data || []);
+        this.incomingRequests.set(this.syncBookImages(data));
+      },
       error: (err) => console.error(err)
     });
 
     this.exchangeService.getOutgoingRequests().subscribe({
-      next: (data) => this.outgoingRequests.set(data),
+      next: (response: any) => {
+        const data = Array.isArray(response) ? response : (response.requests || response.data || []);
+        this.outgoingRequests.set(this.syncBookImages(data));
+      },
       error: (err) => console.error(err)
+    });
+  }
+
+  syncBookImages(requests: any[]) {
+    const books = this.allBooksDictionary();
+    if (!books.length) return requests;
+
+    return requests.map(req => {
+      if (req.book && req.book._id) {
+        const matchingBook = books.find(b => b._id === req.book._id);
+        if (matchingBook && matchingBook.imageUrl) {
+          req.book.imageUrl = matchingBook.imageUrl;
+        }
+      }
+      return req;
     });
   }
 
