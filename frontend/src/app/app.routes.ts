@@ -9,18 +9,20 @@ import { Exchanges } from './pages/exchanges/exchanges';
 import { Browse } from './pages/browse/browse';
 import { BookDetails } from './pages/book-details/book-details';
 import { Settings } from './pages/settings/settings';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
-    { path : '', component : Home },
-    { path : 'home', component : Home },
-    { path : 'index', component : Home },
-    { path : 'login', component : Login },
-    { path : 'register', component : Register },
-    { path : 'dashboard', component : Dashboard },
-    { path : 'my-library', component : MyLibrary },
-    { path : 'add-book', component : AddBook },
-    { path : 'exchanges', component : Exchanges },
-    { path : 'browse', component : Browse },
-    { path : 'book/:id', component : BookDetails },
-    { path : 'settings', component : Settings },
+    { path: '', component: Home },
+    { path: 'home', component: Home },
+    { path: 'index', component: Home },
+    { path: 'login', component: Login },
+    { path: 'register', component: Register },
+    { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
+    { path: 'my-library', component: MyLibrary, canActivate: [authGuard] },
+    { path: 'add-book', component: AddBook, canActivate: [authGuard] },
+    { path: 'exchanges', component: Exchanges, canActivate: [authGuard] },
+    { path: 'browse', component: Browse, canActivate: [authGuard] },
+    { path: 'book/:id', component: BookDetails, canActivate: [authGuard] },
+    { path: 'settings', component: Settings, canActivate: [authGuard] },
+    { path: '**', redirectTo: '' }
 ];
