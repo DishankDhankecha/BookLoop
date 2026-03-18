@@ -168,7 +168,7 @@
                         @for (req of historyIncoming(); track req._id) {
                         <div class="border border-indigo/20 p-5 bg-transparent flex gap-4 opacity-60">
                             <div
-                                class="w-16 shrink-0 aspect-[3/4] border border-indigo/20 bg-indigo/5 relative overflow-hidden">
+                                class="w-16 shrink-0 aspect-3/4 border border-indigo/20 bg-indigo/5 relative overflow-hidden">
                                 @if (req.book?.imageUrl) {
                                 <img [src]="req.book.imageUrl" class="w-full h-full object-cover grayscale"
                                     alt="Cover" />
@@ -214,7 +214,7 @@
                         @for (req of historyOutgoing(); track req._id) {
                         <div class="border border-indigo/20 p-5 bg-transparent flex gap-4 opacity-60">
                             <div
-                                class="w-16 shrink-0 aspect-[3/4] border border-indigo/20 bg-indigo/5 relative overflow-hidden">
+                                class="w-16 shrink-0 aspect-3/4 border border-indigo/20 bg-indigo/5 relative overflow-hidden">
                                 @if (req.book?.imageUrl) {
                                 <img [src]="req.book.imageUrl" class="w-full h-full object-cover grayscale"
                                     alt="Cover" />

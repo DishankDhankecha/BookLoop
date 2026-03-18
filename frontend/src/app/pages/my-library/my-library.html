@@ -6,15 +6,23 @@
 
         <main class="flex-1 overflow-y-auto w-full p-6 md:p-12">
             <header class="max-w-300 mx-auto mb-10">
-                <h1 class="font-serif text-4xl md:text-5xl text-indigo mb-2">My Library</h1>
-                <p class="text-xs tracking-widest uppercase opacity-70">Manage your listed volumes</p>
+                <div class="flex flex-col md:flex-row md:justify-between md:items-end gap-6">
+                    <div>
+                        <h1 class="font-serif text-4xl md:text-5xl text-indigo mb-2">My Library</h1>
+                        <p class="text-xs tracking-widest uppercase opacity-70">Manage your listed volumes</p>
+                    </div>
+                    <a routerLink="/add-book"
+                        class="bg-sage text-indigo px-8 py-4 text-[10px] font-black tracking-[0.2em] uppercase hover:brightness-95 transition-all text-center">
+                        List New Volume
+                    </a>
+                </div>
                 <div class="h-px bg-indigo/20 w-full mt-6"></div>
             </header>
 
             <section class="max-w-300 mx-auto flex flex-col md:flex-row gap-6 mb-10">
                 <div class="flex-1 relative flex items-center">
                     <input [(ngModel)]="searchQuery"
-                        class="w-full outline-0 bg-transparent border-t-0 border-x-0 border-b border-indigo px-0 py-3 text-indigo placeholder:text-indigo/40 focus:ring-0 focus:border-sage text-lg font-medium transition-colors"
+                        class="w-full bg-transparent border-t-0 border-x-0 border-b border-indigo px-0 py-3 text-indigo placeholder:text-indigo/40 focus:ring-0 focus:border-sage text-lg font-medium transition-colors"
                         placeholder="Search title, author, or ISBN..." type="text" />
                     <span
                         class="material-symbols-outlined absolute right-0 text-indigo/40 pointer-events-none">search</span>
@@ -24,7 +32,7 @@
                     <div class="relative flex items-center group w-full md:w-auto">
                         <select [(ngModel)]="selectedStatus"
                             class="w-full appearance-none border border-indigo pl-6 pr-12 py-3 bg-beige text-xs font-bold uppercase tracking-widest hover:bg-indigo/5 focus:ring-0 focus:border-sage transition-colors cursor-pointer outline-none">
-                            <option value="All">Status : All</option>
+                            <option value="All">Status: All</option>
                             <option value="Available">Available</option>
                             <option value="Pending Exchange">Pending Exchange</option>
                             <option value="Lent Out">Lent Out</option>
@@ -37,8 +45,7 @@
                     <div class="relative flex items-center group w-full md:w-auto">
                         <select [(ngModel)]="selectedCondition"
                             class="w-full appearance-none border border-indigo pl-6 pr-12 py-3 bg-beige text-xs font-bold uppercase tracking-widest hover:bg-indigo/5 focus:ring-0 focus:border-sage transition-colors cursor-pointer outline-none">
-                            <option value="All">Condition :</option>
-                            <option value="All">All</option>
+                            <option value="All">Condition: All</option>
                             <option value="Like New">Like New</option>
                             <option value="Read Once">Read Once</option>
                             <option value="Heavily Loved">Heavily Loved</option>
@@ -49,11 +56,11 @@
                 </div>
             </section>
 
-            <section class="max-w-[1200px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-12">
+            <section class="max-w-300 mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 pb-12">
                 @for (book of filteredBooks(); track book._id) {
                 <div
                     class="flex flex-col border border-indigo bg-beige group hover:shadow-[0_10px_40px_-15px_rgba(30,42,68,0.2)] transition-all">
-                    <div class="aspect-[3/4] overflow-hidden border-b border-indigo relative">
+                    <div class="aspect-3/4 overflow-hidden border-b border-indigo relative">
                         @if (book.imageUrl) {
                         <img [src]="book.imageUrl"
                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -95,9 +102,6 @@
                     <p class="text-xs uppercase tracking-widest text-indigo/60 mb-6 text-center max-w-sm">
                         You either haven't listed any volumes yet, or none match your current filters.
                     </p>
-                    <a routerLink="/add-book"
-                        class="bg-sage text-indigo px-8 py-3 text-[10px] font-black tracking-[0.2em] uppercase hover:brightness-95">List
-                        a Book</a>
                 </div>
                 }
             </section>

@@ -12,7 +12,7 @@ const getBooks = async (req, res) => {
 
 const createBook = async (req, res) => {
     try {
-        const { title, author, isbn, genre, condition, images } = req.body;
+        const { title, author, isbn, genre, condition, images, imageUrl } = req.body;
 
         const book = new Book({
             title,
@@ -21,6 +21,7 @@ const createBook = async (req, res) => {
             genre,
             condition,
             images,
+            imageUrl,
             owner: req.user._id
         });
 
@@ -98,11 +99,11 @@ const getPublicBooks = async (req, res) => {
 const getBookById = async (req, res) => {
     try {
         const book = await Book.findById(req.params.id).populate('owner', 'username location avatar');
-        
+
         if (!book) {
             return res.status(404).json({ message: "Book not found" });
         }
-        
+
         res.json(book);
     } catch (err) {
         res.status(500).json({ message: err.message });
