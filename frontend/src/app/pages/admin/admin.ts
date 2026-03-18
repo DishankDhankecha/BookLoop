@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { Router } from '@angular/router';
 import { Admin as AdminService} from '../../services/admin';
+import { Book } from '../../services/book';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -10,21 +11,24 @@ import { CommonModule } from '@angular/common';
   templateUrl: './admin.html',
   styleUrl: './admin.css',
 })
-export class Admin {
+export class Admin implements OnInit {
   
   private adminService = inject(AdminService);
   private authService = inject(Auth);
+  private bookService = inject(Book);
   private router = inject(Router);
 
-  activeTab = signal<'overview' | 'users' | 'books' | 'exchanges'>('overview');
+  activeTab = signal<'overview' | 'users' | 'books' | 'exchanges' | 'queue'>('overview');
   isLoading = signal(true);
 
   users = signal<any[]>([]);
   books = signal<any[]>([]);
   exchanges = signal<any[]>([]);
+  pendingBooks = signal<any[]>([]);
 
   ngOnInit() {
     this.loadData();
+    this.loadPendingBooks();
   }
 
   loadData() {
@@ -39,6 +43,23 @@ export class Admin {
         console.error(err);
         this.isLoading.set(false);
       }
+    });
+  }
+
+  loadPendingBooks() {
+    this.bookService.getPendingBooks().subscribe({
+      next: (books) => this.pendingBooks.set(books),
+      error: (err) => console.error(err)
+    });
+  }
+
+  handleReview(id: string, action: 'approve' | 'reject') {
+    this.bookService.reviewBook(id, action).subscribe({
+      next: () => {
+        this.pendingBooks.update(books => books.filter(b => b._id !== id));
+        this.loadData();
+      },
+      error: (err) => alert('Action failed.')
     });
   }
 

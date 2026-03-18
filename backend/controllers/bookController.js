@@ -22,7 +22,8 @@ const createBook = async (req, res) => {
             condition,
             images,
             imageUrl,
-            owner: req.user._id
+            owner: req.user._id,
+            status: 'Pending Approval'
         });
 
         const createdBook = await book.save();
@@ -33,6 +34,37 @@ const createBook = async (req, res) => {
         );
 
         res.status(201).json(createdBook);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+const getPendingBooks = async (req, res) => {
+    try {
+        const pendingBooks = await Book.find({ status: 'Pending Approval' }).populate('owner', 'username email');
+        res.status(200).json(pendingBooks);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+const reviewBook = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { action } = req.body;
+
+        let newStatus = 'Available';
+        if (action === 'reject') {
+            newStatus = 'Rejected'; // Changed from 'Hidden' so the user knows exactly what happened
+        }
+
+        const updatedBook = await Book.findByIdAndUpdate(
+            id,
+            { status: newStatus },
+            { new: true }
+        );
+
+        res.status(200).json(updatedBook);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -110,4 +142,4 @@ const getBookById = async (req, res) => {
     }
 };
 
-module.exports = { getBooks, createBook, updateBook, deleteBook, getPublicBooks, getBookById };
+module.exports = { getBooks, createBook, getPendingBooks, reviewBook, updateBook, deleteBook, getPublicBooks, getBookById };

@@ -80,7 +80,28 @@
                         <h3 class="font-serif text-lg leading-tight text-indigo line-clamp-1">{{ book.title }}</h3>
                         <p class="text-[10px] font-bold text-indigo/60 uppercase tracking-wider line-clamp-1">{{
                             book.author }}</p>
-                        <p class="text-[9px] uppercase tracking-widest opacity-50 mt-2">Status: {{ book.status }}</p>
+
+                        <div class="mt-3">
+                            @if (book.status === 'Pending Approval') {
+                            <span
+                                class="text-[9px] font-black uppercase tracking-widest bg-yellow-100 text-yellow-800 border border-yellow-300 px-2 py-1">
+                                Pending Approval
+                            </span>
+                            } @else if (book.status === 'Rejected') {
+                            <span
+                                class="text-[9px] font-black uppercase tracking-widest bg-red-100 text-red-800 border border-red-300 px-2 py-1">
+                                Rejected by Admin
+                            </span>
+                            <p class="text-[8px] mt-1.5 text-red-700 font-bold uppercase tracking-widest opacity-80">
+                                Please edit listing or delete.
+                            </p>
+                            } @else {
+                            <span
+                                class="text-[9px] font-black uppercase tracking-widest border border-indigo/30 text-indigo px-2 py-1">
+                                Status: {{ book.status }}
+                            </span>
+                            }
+                        </div>
                     </div>
 
                     <div class="flex border-t border-indigo">

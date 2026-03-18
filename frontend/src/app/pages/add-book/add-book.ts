@@ -20,7 +20,7 @@ export class AddBook {
   isSubmitting = signal(false);
 
   availableGenres = [
-    'Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery',
+    'Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery','Romance', 'Historical', 'Biography', 'Self-Help', 'Health', 'Travel', 'Children', 'Young Adult', 'Cooking', 'Science', 'Math', 'Philosophy', 'Psychology', 'Business', 'Finance', 'Politics', 'Religion', 'Comics', 'Graphic Novels', 'Poetry',
     'Thriller', 'Design', 'Architecture', 'Typography', 'Technology', 'Art'
   ];
 
@@ -69,6 +69,8 @@ export class AddBook {
     this.bookService.createBook(this.bookData).subscribe({
       next: () => {
         this.isSubmitting.set(false);
+        // Explicit notification added here
+        alert('Success! Your book has been submitted. It is currently pending Admin Approval and will appear in the public archive once reviewed.');
         this.router.navigate(['/my-library']);
       },
       error: (err) => {

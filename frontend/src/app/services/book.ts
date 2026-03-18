@@ -44,4 +44,12 @@ export class Book {
   getBookById(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
+
+  getPendingBooks(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/admin/pending`, { headers: this.getHeaders() });
+  }
+
+  reviewBook(id: string, action: 'approve' | 'reject'): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/admin/review/${id}`, { action }, { headers: this.getHeaders() });
+  }
 }

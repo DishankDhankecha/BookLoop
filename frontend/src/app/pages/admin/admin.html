@@ -13,6 +13,15 @@
                 class="text-left px-4 py-3 text-xs font-black uppercase tracking-widest transition-colors hover:bg-indigo hover:text-beige">
                 Overview
             </button>
+            <button (click)="activeTab.set('queue')" [class.bg-indigo]="activeTab() === 'queue'"
+                [class.text-beige]="activeTab() === 'queue'" [class.bg-transparent]="activeTab() !== 'queue'"
+                [class.text-indigo]="activeTab() !== 'queue'"
+                class="px-4 py-3 text-xs font-black uppercase tracking-widest transition-colors hover:bg-indigo hover:text-beige flex justify-between items-center">
+                <span>Moderation Queue</span>
+                @if (pendingBooks().length > 0) {
+                <span class="bg-sage text-indigo px-2 py-0.5 text-[9px]">{{ pendingBooks().length }}</span>
+                }
+            </button>
             <button (click)="activeTab.set('users')" [class.bg-indigo]="activeTab() === 'users'"
                 [class.text-beige]="activeTab() === 'users'" [class.bg-transparent]="activeTab() !== 'users'"
                 [class.text-indigo]="activeTab() !== 'users'"
@@ -68,6 +77,63 @@
                     <p class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">Logged Exchanges</p>
                     <p class="text-6xl font-serif text-indigo">{{ exchanges().length }}</p>
                 </div>
+            </div>
+            }
+
+            @if (activeTab() === 'queue') {
+            <header class="mb-12">
+                <h2 class="font-serif text-5xl text-indigo mb-2">Moderation Queue</h2>
+                <div class="h-px bg-indigo/20 w-full mt-8"></div>
+            </header>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @for (book of pendingBooks(); track book._id) {
+                <div class="border border-indigo bg-white/30 flex flex-col group">
+                    <div class="flex gap-4 p-4 border-b border-indigo/20">
+                        <div
+                            class="w-20 shrink-0 aspect-3/4 bg-indigo/5 relative overflow-hidden border border-indigo/20">
+                            @if (book.imageUrl) {
+                            <img [src]="book.imageUrl" class="w-full h-full object-cover" alt="Cover" />
+                            } @else if (book.images && book.images.length > 0) {
+                            <img [src]="book.images[0]" class="w-full h-full object-cover" alt="Cover" />
+                            } @else {
+                            <div class="w-full h-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-indigo/20 text-2xl">auto_stories</span>
+                            </div>
+                            }
+                        </div>
+                        <div class="flex flex-col justify-center flex-1">
+                            <h3 class="font-serif text-xl text-indigo line-clamp-2 leading-tight mb-1">{{ book.title }}
+                            </h3>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-indigo/60 mb-2">{{
+                                book.author }}</p>
+                            <p
+                                class="text-[9px] uppercase tracking-widest bg-indigo/5 border border-indigo/20 px-2 py-1 inline-block w-fit">
+                                Listed by @{{ book.owner?.username }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex">
+                        <button (click)="handleReview(book._id, 'approve')"
+                            class="flex-1 bg-sage text-indigo py-4 text-[10px] font-black uppercase tracking-[0.2em] hover:brightness-95 transition-all">
+                            Approve
+                        </button>
+                        <button (click)="handleReview(book._id, 'reject')"
+                            class="flex-1 border-l border-indigo bg-transparent text-red-700 py-4 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-red-700 hover:text-beige transition-colors">
+                            Reject
+                        </button>
+                    </div>
+                </div>
+                } @empty {
+                <div
+                    class="col-span-full py-20 flex flex-col items-center justify-center border border-dashed border-indigo/30 bg-indigo/5">
+                    <span class="material-symbols-outlined text-4xl text-sage mb-4">check_circle</span>
+                    <h3 class="font-serif text-2xl text-indigo mb-2">Queue is Empty</h3>
+                    <p class="text-xs uppercase tracking-widest text-indigo/60 text-center max-w-sm">
+                        All user submissions have been reviewed.
+                    </p>
+                </div>
+                }
             </div>
             }
 

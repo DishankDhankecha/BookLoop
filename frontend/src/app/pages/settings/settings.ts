@@ -36,7 +36,7 @@ export class Settings implements OnInit {
   };
 
   availableGenres = [
-    'Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery',
+    'Fiction', 'Non-Fiction', 'Science Fiction', 'Fantasy', 'Mystery','Romance', 'Historical', 'Biography', 'Self-Help', 'Health', 'Travel', 'Children', 'Young Adult', 'Cooking', 'Science', 'Math', 'Philosophy', 'Psychology', 'Business', 'Finance', 'Politics', 'Religion', 'Comics', 'Graphic Novels', 'Poetry',
     'Thriller', 'Design', 'Architecture', 'Typography', 'Technology', 'Art'
   ];
 
